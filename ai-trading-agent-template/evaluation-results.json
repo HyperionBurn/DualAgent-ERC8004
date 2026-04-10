@@ -1,0 +1,423 @@
+{
+  "generatedAt": "2026-04-09T15:11:26.538Z",
+  "currentRunLabel": "rank1-001",
+  "matrixProfile": {
+    "maxTradeUsdValues": [
+      30
+    ],
+    "maxTradesPerHourValues": [
+      4,
+      6,
+      8
+    ],
+    "maxSlippageBpsValues": [
+      30,
+      50
+    ],
+    "indicatorLookbackValues": [
+      70,
+      90,
+      110
+    ],
+    "minTrendStrengthBpsValues": [
+      1,
+      2,
+      4
+    ],
+    "maxBullishRsiValues": [
+      68,
+      72,
+      76
+    ],
+    "minBearishRsiValues": [
+      24,
+      28,
+      32
+    ],
+    "minConfidenceValues": [
+      0.52,
+      0.58,
+      0.64
+    ],
+    "minExpectedEdgeBpsValues": [
+      0
+    ],
+    "breakerMaxConsecutiveLossesValues": [
+      2,
+      3,
+      4
+    ],
+    "breakerMaxDailyLossUsdValues": [
+      150,
+      200,
+      300
+    ],
+    "expectedCombinationCount": 13122,
+    "observedRunCount": 5
+  },
+  "gateProfile": {
+    "minCheckpointCount": 30,
+    "maxCheckpointCount": 60,
+    "minFillCount": 5,
+    "maxFillCount": 15,
+    "minNetPnlUsd": 0.01,
+    "maxDrawdownBps": 500,
+    "minValidationCoveragePct": 70,
+    "minValidationScore": 82,
+    "minReputationScore": 90,
+    "minReputationFeedbackCount": 6,
+    "minReputationDistinctRaterCount": 3,
+    "requireValidationRegistry": true,
+    "requireReputationRegistry": true
+  },
+  "winnerSelectionRule": "gate pass required, then compositeScore DESC, then netPnlUsd DESC, then maxDrawdownBps ASC",
+  "freshScoreWindowRecommendation": {
+    "recommended": false,
+    "reason": "validation 67.73/82 and reputation 90.00/90 are within the current window (0.33)"
+  },
+  "winner": null,
+  "candidates": [
+    {
+      "rank": 1,
+      "generatedAt": "2026-04-09T14:16:26.162Z",
+      "runLabel": "2026-04-09T14-16-26-158Z",
+      "parameters": {
+        "maxTradeUsd": 100,
+        "maxTradesPerHour": 6,
+        "maxSlippageBps": 50,
+        "indicatorLookback": 80,
+        "minTrendStrengthBps": 1,
+        "maxBullishRsi": 72,
+        "minBearishRsi": 28,
+        "minConfidence": 0.6,
+        "minExpectedEdgeBps": 12,
+        "breakerMaxConsecutiveLosses": 3,
+        "breakerMaxDailyLossUsd": 200
+      },
+      "metrics": {
+        "agentId": "5",
+        "checkpointCount": 61,
+        "fillCount": 7,
+        "netPnlUsd": -1.15,
+        "maxDrawdownBps": 1,
+        "compositeScore": 78.2,
+        "averageValidationScore": 99,
+        "validationSource": "validation-registry",
+        "validationCoveragePct": 1.64,
+        "averageReputationScore": 90,
+        "reputationSource": "reputation-registry",
+        "reputationFeedbackCount": 23,
+        "reputationDistinctRaterCount": 10,
+        "freshScoreWindowRecommended": false,
+        "freshScoreWindowReason": "validation 99.00/82 and reputation 90.00/90 are within the current window (0.00)"
+      },
+      "gate": {
+        "pass": false,
+        "checks": {
+          "checkpointDepth": false,
+          "fillDepth": true,
+          "positivePnl": false,
+          "drawdownLimit": true,
+          "validationSource": true,
+          "validationCoverage": false,
+          "validationQuality": true,
+          "reputationSource": true,
+          "reputationQuality": true,
+          "reputationDepth": true,
+          "reputationDiversity": true
+        },
+        "reasons": [
+          "checkpointCount must be within 30-60",
+          "netPnlUsd must be greater than 0.01",
+          "validationCoveragePct must be >= 70"
+        ]
+      },
+      "traceQuality": {
+        "traceCount": 0,
+        "fallbackCount": 0,
+        "fallbackRatePct": 0,
+        "modelCount": 0,
+        "qualitativeStability": "stable planner traces"
+      },
+      "sourceFiles": {
+        "metrics": "metrics.json",
+        "phase2Evidence": "phase2-evidence.json",
+        "replaySummary": "replay-summary.json"
+      }
+    },
+    {
+      "rank": 2,
+      "generatedAt": "2026-04-09T13:02:08.600Z",
+      "runLabel": "2026-04-09T13-02-08-597Z",
+      "parameters": {
+        "maxTradeUsd": 100,
+        "maxTradesPerHour": 6,
+        "maxSlippageBps": 50,
+        "indicatorLookback": 80,
+        "minTrendStrengthBps": 1,
+        "maxBullishRsi": 72,
+        "minBearishRsi": 28,
+        "minConfidence": 0.6,
+        "minExpectedEdgeBps": 12,
+        "breakerMaxConsecutiveLosses": 3,
+        "breakerMaxDailyLossUsd": 200
+      },
+      "metrics": {
+        "agentId": "5",
+        "checkpointCount": 60,
+        "fillCount": 6,
+        "netPnlUsd": 0.03,
+        "maxDrawdownBps": 0,
+        "compositeScore": 73.1,
+        "averageValidationScore": 72.96,
+        "validationSource": "validation-registry",
+        "validationCoveragePct": 0,
+        "averageReputationScore": 90,
+        "reputationSource": "reputation-registry",
+        "reputationFeedbackCount": 23,
+        "reputationDistinctRaterCount": 0,
+        "freshScoreWindowRecommended": false,
+        "freshScoreWindowReason": "validation 72.96/82 and reputation 90.00/90 are within the current window (0.21)"
+      },
+      "gate": {
+        "pass": false,
+        "checks": {
+          "checkpointDepth": true,
+          "fillDepth": true,
+          "positivePnl": true,
+          "drawdownLimit": true,
+          "validationSource": true,
+          "validationCoverage": false,
+          "validationQuality": false,
+          "reputationSource": true,
+          "reputationQuality": true,
+          "reputationDepth": true,
+          "reputationDiversity": false
+        },
+        "reasons": [
+          "validationCoveragePct must be >= 70",
+          "averageValidationScore must be >= 82",
+          "reputationDistinctRaterCount must be >= 3"
+        ]
+      },
+      "traceQuality": {
+        "traceCount": 0,
+        "fallbackCount": 0,
+        "fallbackRatePct": 0,
+        "modelCount": 0,
+        "qualitativeStability": "stable planner traces"
+      },
+      "sourceFiles": {
+        "metrics": "metrics.json",
+        "phase2Evidence": "phase2-evidence.json",
+        "replaySummary": "replay-summary.json"
+      }
+    },
+    {
+      "rank": 3,
+      "generatedAt": "2026-04-09T15:11:26.527Z",
+      "runLabel": "rank1-001",
+      "parameters": {
+        "maxTradeUsd": 30,
+        "maxTradesPerHour": 4,
+        "maxSlippageBps": 30,
+        "indicatorLookback": 70,
+        "minTrendStrengthBps": 1,
+        "maxBullishRsi": 68,
+        "minBearishRsi": 24,
+        "minConfidence": 0.52,
+        "minExpectedEdgeBps": 0,
+        "breakerMaxConsecutiveLosses": 2,
+        "breakerMaxDailyLossUsd": 150
+      },
+      "metrics": {
+        "agentId": "5",
+        "checkpointCount": 60,
+        "fillCount": 1,
+        "netPnlUsd": -0.05,
+        "maxDrawdownBps": 0,
+        "compositeScore": 72.04,
+        "averageValidationScore": 67.73,
+        "validationSource": "validation-registry",
+        "validationCoveragePct": 100,
+        "averageReputationScore": 90,
+        "reputationSource": "reputation-registry",
+        "reputationFeedbackCount": 23,
+        "reputationDistinctRaterCount": 10,
+        "freshScoreWindowRecommended": false,
+        "freshScoreWindowReason": "validation 67.73/82 and reputation 90.00/90 are within the current window (0.33)"
+      },
+      "gate": {
+        "pass": false,
+        "checks": {
+          "checkpointDepth": true,
+          "fillDepth": false,
+          "positivePnl": false,
+          "drawdownLimit": true,
+          "validationSource": true,
+          "validationCoverage": true,
+          "validationQuality": false,
+          "reputationSource": true,
+          "reputationQuality": true,
+          "reputationDepth": true,
+          "reputationDiversity": true
+        },
+        "reasons": [
+          "fillCount must be within 5-15",
+          "netPnlUsd must be greater than 0.01",
+          "averageValidationScore must be >= 82"
+        ]
+      },
+      "traceQuality": {
+        "traceCount": 60,
+        "fallbackCount": 27,
+        "fallbackRatePct": 45,
+        "modelCount": 3,
+        "qualitativeStability": "high fallback pressure"
+      },
+      "sourceFiles": {
+        "metrics": "metrics.json",
+        "phase2Evidence": "phase2-evidence.json",
+        "replaySummary": "replay-summary.json"
+      }
+    },
+    {
+      "rank": 4,
+      "generatedAt": "2026-04-09T11:59:29.470Z",
+      "runLabel": "2026-04-09T11-59-29-462Z",
+      "parameters": {
+        "maxTradeUsd": 100,
+        "maxTradesPerHour": 6,
+        "maxSlippageBps": 50,
+        "indicatorLookback": 80,
+        "minTrendStrengthBps": 1,
+        "maxBullishRsi": 72,
+        "minBearishRsi": 28,
+        "minConfidence": 0.6,
+        "minExpectedEdgeBps": 12,
+        "breakerMaxConsecutiveLosses": 3,
+        "breakerMaxDailyLossUsd": 200
+      },
+      "metrics": {
+        "agentId": "5",
+        "checkpointCount": 60,
+        "fillCount": 6,
+        "netPnlUsd": 0.03,
+        "maxDrawdownBps": 0,
+        "compositeScore": 71.9,
+        "averageValidationScore": 72.96,
+        "validationSource": "validation-registry",
+        "validationCoveragePct": 0,
+        "averageReputationScore": 82,
+        "reputationSource": "reputation-registry",
+        "reputationFeedbackCount": 13,
+        "reputationDistinctRaterCount": 0,
+        "freshScoreWindowRecommended": false,
+        "freshScoreWindowReason": "validation 72.96/82 and reputation 82.00/90 are within the current window (0.27)"
+      },
+      "gate": {
+        "pass": false,
+        "checks": {
+          "checkpointDepth": true,
+          "fillDepth": true,
+          "positivePnl": true,
+          "drawdownLimit": true,
+          "validationSource": true,
+          "validationCoverage": false,
+          "validationQuality": false,
+          "reputationSource": true,
+          "reputationQuality": false,
+          "reputationDepth": true,
+          "reputationDiversity": false
+        },
+        "reasons": [
+          "validationCoveragePct must be >= 70",
+          "averageValidationScore must be >= 82",
+          "averageReputationScore must be >= 90",
+          "reputationDistinctRaterCount must be >= 3"
+        ]
+      },
+      "traceQuality": {
+        "traceCount": 0,
+        "fallbackCount": 0,
+        "fallbackRatePct": 0,
+        "modelCount": 0,
+        "qualitativeStability": "stable planner traces"
+      },
+      "sourceFiles": {
+        "metrics": "metrics.json",
+        "phase2Evidence": "phase2-evidence.json",
+        "replaySummary": "replay-summary.json"
+      }
+    },
+    {
+      "rank": 5,
+      "generatedAt": "2026-04-09T06:56:34.348Z",
+      "runLabel": "2026-04-09T06-56-34-347Z",
+      "parameters": {
+        "maxTradeUsd": 100,
+        "maxTradesPerHour": 6,
+        "maxSlippageBps": 50,
+        "indicatorLookback": 80,
+        "minTrendStrengthBps": 1,
+        "maxBullishRsi": 72,
+        "minBearishRsi": 28,
+        "minConfidence": 0.6,
+        "minExpectedEdgeBps": 12,
+        "breakerMaxConsecutiveLosses": 3,
+        "breakerMaxDailyLossUsd": 200
+      },
+      "metrics": {
+        "agentId": "5",
+        "checkpointCount": 60,
+        "fillCount": 6,
+        "netPnlUsd": 0.03,
+        "maxDrawdownBps": 0,
+        "compositeScore": 67.45,
+        "averageValidationScore": 54.48,
+        "validationSource": "checkpoint-confidence",
+        "validationCoveragePct": 100,
+        "averageReputationScore": 77,
+        "reputationSource": "reputation-registry",
+        "reputationFeedbackCount": 10,
+        "reputationDistinctRaterCount": null,
+        "freshScoreWindowRecommended": true,
+        "freshScoreWindowReason": "validation 54.48/82 and reputation 77.00/90 are still pressuring the current window (0.74)"
+      },
+      "gate": {
+        "pass": false,
+        "checks": {
+          "checkpointDepth": true,
+          "fillDepth": true,
+          "positivePnl": true,
+          "drawdownLimit": true,
+          "validationSource": false,
+          "validationCoverage": true,
+          "validationQuality": false,
+          "reputationSource": true,
+          "reputationQuality": false,
+          "reputationDepth": true,
+          "reputationDiversity": false
+        },
+        "reasons": [
+          "validationSource must be validation-registry",
+          "averageValidationScore must be >= 82",
+          "averageReputationScore must be >= 90",
+          "reputationDistinctRaterCount must be >= 3"
+        ]
+      },
+      "traceQuality": {
+        "traceCount": 0,
+        "fallbackCount": 0,
+        "fallbackRatePct": 0,
+        "modelCount": 0,
+        "qualitativeStability": "stable planner traces"
+      },
+      "sourceFiles": {
+        "metrics": "metrics.json",
+        "phase2Evidence": null,
+        "replaySummary": "replay-summary.json"
+      }
+    }
+  ]
+}

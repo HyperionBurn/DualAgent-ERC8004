@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Building AI Trading Agents with On-Chain Identity</title>
+    <meta
+      name="description"
+      content="A complete guide to building AI trading agents with ERC-8004 identity, risk controls, Kraken CLI integration, and EIP-712 checkpoints."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Space+Grotesk:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="backdrop"></div>
+
+    <header class="site-header">
+      <div class="brand-wrap">
+        <a class="brand" href="#top">
+          <span class="brand-dot"></span>
+          lablab.ai
+        </a>
+        <p class="tagline">Community innovating and building with artificial intelligence</p>
+      </div>
+
+      <nav class="top-nav" aria-label="Main navigation">
+        <a href="#part-1">AI Hackathons</a>
+        <a href="#part-2">AI Apps</a>
+        <a href="#part-3">AI Tech</a>
+        <a href="#tutorial">AI Tutorials</a>
+        <a href="#part-5">AI Articles</a>
+        <a href="#part-7">Surge</a>
+        <a href="#footer-sponsor">Sponsor</a>
+      </nav>
+    </header>
+
+    <main id="top" class="layout">
+      <article class="article-card" id="tutorial">
+        <p class="breadcrumb">Home / Tutorials</p>
+        <h1>Building AI Trading Agents with On-Chain Identity: A Complete Guide</h1>
+        <p class="meta">Saturday, March 28, 2026 by kimoisteve · <a href="#">Edit on Github</a></p>
+
+        <section class="section intro">
+          <h2>Overview</h2>
+          <p>
+            This guide shows how to build a production-ready AI trading agent using ERC-8004 identity,
+            on-chain risk validation, Kraken exchange execution, and EIP-712 signed checkpoints. The
+            architecture is reusable: swap strategy logic, keep the trust and accountability scaffolding.
+          </p>
+        </section>
+
+        <section class="section" id="part-1">
+          <h2>Part 1: What Is ERC-8004 and Why It Matters</h2>
+          <h3>The problem: your AI agent is a ghost</h3>
+          <p>
+            Without a standard identity layer, a trading bot is only a wallet address. That means no
+            verifiable ownership, no contract-level discoverability, and no portable reputation.
+          </p>
+          <ul>
+            <li>No accountability: anyone can claim a wallet is their AI agent.</li>
+            <li>No discoverability: contracts cannot reliably verify the authorized signer.</li>
+            <li>No reputation: there is no stable identity anchor across trades and checkpoints.</li>
+          </ul>
+
+          <h3>What ERC-8004 provides</h3>
+          <p>
+            ERC-8004 defines an AI Agent Identity Registry. Registering an agent mints an ERC-721 token,
+            and the token ID becomes the persistent agentId used across the system.
+          </p>
+
+          <pre><code>struct AgentRegistration {
+  address operatorWallet;
+  address agentWallet;
+  string name;
+  string description;
+  string[] capabilities;
+  uint256 registeredAt;
+  bool active;
+}</code></pre>
+
+          <p>Registration mints an NFT identity and returns a unique token ID:</p>
+          <pre><code>agentId = _nextAgentId++;
+_mint(msg.sender, agentId);</code></pre>
+
+          <h3>Prerequisites</h3>
+          <ul>
+            <li>Node.js 20+</li>
+            <li>Sepolia ETH</li>
+            <li>Infura or Alchemy Sepolia RPC URL</li>
+            <li>Kraken CLI installed</li>
+          </ul>
+
+          <h3>Setup flow</h3>
+          <pre><code>git clone https://github.com/Stephen-Kimoi/ai-trading-agent-template
+cd ai-trading-agent-template
+npm install
+cp .env.example .env</code></pre>
+
+          <p>Required environment values:</p>
+          <pre><code>SEPOLIA_RPC_URL=https://sepolia.infura.io/v3/YOUR_KEY
+PRIVATE_KEY=0xYOUR_OPERATOR_WALLET_PRIVATE_KEY
+AGENT_WALLET_PRIVATE_KEY=0xYOUR_HOT_WALLET_KEY</code></pre>
+
+          <p>Deploy contracts:</p>
+          <pre><code>npx hardhat run scripts/deploy.ts --network sepolia</code></pre>
+
+          <p>Register your agent:</p>
+          <pre><code>npm run register</code></pre>
+
+          <div class="callout">
+            <p>
+              The resulting AGENT_ID is the identity anchor for vault allocation, risk validation, and
+              EIP-712 checkpoint signatures.
+            </p>
+          </div>
+        </section>
+
+        <section class="section" id="part-2">
+          <h2>Part 2: Registering Your Agent On-Chain (ERC-721)</h2>
+          <p>
+            ERC-721 turns agent identity into a transferable, indexer-friendly NFT. Wallets and tooling
+            already understand token IDs and metadata URIs.
+          </p>
+          <ul>
+            <li>agentId is gas-efficient, unique, and permanent.</li>
+            <li>Token ownership can be transferred with reputation history.</li>
+            <li>Token URI links to richer off-chain registration metadata.</li>
+          </ul>
+
+          <pre><code>const agentId = await getAgentId(operatorSigner, registryAddress, {
+  name: "AITradingAgent",
+  agentWallet: agentWallet.address,
+  capabilities: ["trading", "analysis", "eip712-signing"],
+  agentURI: "ipfs://..."
+});</code></pre>
+        </section>
+
+        <section class="section" id="part-3">
+          <h2>Part 3: Connecting to Kraken CLI</h2>
+          <h3>Why CLI over raw REST</h3>
+          <ul>
+            <li>Nonce and signature handling is managed for you.</li>
+            <li>Built-in retry behavior for rate limits.</li>
+            <li>Native sandbox mode for paper trading.</li>
+            <li>Optional MCP server mode for tool-use agents.</li>
+          </ul>
+
+          <pre><code>kraken --version
+kraken --json ticker --pair XBTUSD
+kraken --sandbox --json --api-key $KRAKEN_API_KEY --api-secret $KRAKEN_API_SECRET \
+  order add --pair XBTUSD --type buy --ordertype market --volume 0.001</code></pre>
+
+          <p>Environment variables:</p>
+          <pre><code>KRAKEN_API_KEY=your_api_key
+KRAKEN_API_SECRET=your_api_secret
+KRAKEN_SANDBOX=true
+KRAKEN_CLI_PATH=kraken</code></pre>
+
+          <pre><code>private async run(subcommand: string[], isPrivate = false): Promise&lt;unknown&gt; {
+  const args: string[] = [];
+  if (isPrivate && !this.sandbox) {
+    args.push("--api-key", this.apiKey, "--api-secret", this.apiSecret);
+  }
+  args.push(...subcommand);
+  args.push("-o", "json");
+
+  const { stdout } = await execFileAsync(KRAKEN_BIN, args, { timeout: 15000 });
+  return JSON.parse(stdout.trim());
+}</code></pre>
+        </section>
+
+        <section class="section" id="part-4">
+          <h2>Part 4: Vault, Risk Router, and TradeIntent Pattern</h2>
+          <p>
+            Every trade starts as a signed intent. The RiskRouter validates signature, nonce, deadline, and
+            configured risk limits before execution.
+          </p>
+
+          <pre><code>struct TradeIntent {
+  uint256 agentId;
+  address agentWallet;
+  string pair;
+  string action;
+  uint256 amountUsdScaled;
+  uint256 maxSlippageBps;
+  uint256 nonce;
+  uint256 deadline;
+}</code></pre>
+
+          <pre><code>const intent = await riskRouter.buildIntent(agentId, wallet.address, "XBTUSD", "BUY", 100, {
+  maxSlippageBps: 50,
+  deadlineSeconds: 300
+});
+const signed = await riskRouter.signIntent(intent, wallet);
+const result = await riskRouter.submitIntent(signed);</code></pre>
+
+          <p>Default risk settings configured at registration:</p>
+          <pre><code>maxPositionUsdScaled = 50000  // $500
+maxDrawdownBps = 500          // 5%
+maxTradesPerHour = 10</code></pre>
+
+          <div class="callout">
+            <p>
+              This pattern makes trade approvals and rejections auditable on-chain through explicit events.
+            </p>
+          </div>
+        </section>
+
+        <section class="section" id="part-5">
+          <h2>Part 5: Building the Explanation Layer</h2>
+          <p>
+            Each TradeDecision includes a required reasoning field. The reasoning is shown to humans and
+            committed cryptographically for machine verification.
+          </p>
+
+          <pre><code>interface TradeDecision {
+  action: "BUY" | "SELL" | "HOLD";
+  asset: string;
+  pair: string;
+  amount: number;
+  confidence: number;
+  reasoning: string;
+}</code></pre>
+
+          <p>Reasoning appears in:</p>
+          <ul>
+            <li>Per-tick terminal explanation logs.</li>
+            <li>Checkpoint terminal summary block.</li>
+            <li>EIP-712 payload as keccak256(reasoning).</li>
+            <li>checkpoints.jsonl audit records.</li>
+            <li>Live dashboard checkpoint cards.</li>
+          </ul>
+
+          <pre><code>[2026-03-28T12:27:05.553Z] HOLD XBTUSD @ $66,391.20
+  Confidence: 50%
+  Reason: No clear momentum (-0.00% change). Holding current position.</code></pre>
+        </section>
+
+        <section class="section" id="part-6">
+          <h2>Part 6: EIP-712 Signed Checkpoints</h2>
+          <p>
+            Checkpoints prove that a specific registered agent made a specific decision at a specific time,
+            without tampering.
+          </p>
+
+          <pre><code>const types = {
+  TradeCheckpoint: [
+    { name: "agentId", type: "uint256" },
+    { name: "timestamp", type: "uint256" },
+    { name: "action", type: "string" },
+    { name: "asset", type: "string" },
+    { name: "pair", type: "string" },
+    { name: "amountUsdScaled", type: "uint256" },
+    { name: "priceUsdScaled", type: "uint256" },
+    { name: "reasoningHash", type: "bytes32" },
+    { name: "confidenceScaled", type: "uint256" },
+    { name: "intentHash", type: "bytes32" }
+  ]
+};</code></pre>
+
+          <pre><code>const sigValid = verifyCheckpoint(cp, registryAddress, 11155111, expectedSigner);
+const reasoningValid = verifyReasoningIntegrity(cp);</code></pre>
+
+          <p>
+            The full reasoning string remains in checkpoints.jsonl while reasoningHash keeps signatures
+            compact and verifiable.
+          </p>
+        </section>
+
+        <section class="section" id="part-7">
+          <h2>Part 7: Reusing the Template</h2>
+          <p>
+            The identity, risk, exchange adapter, and checkpoint layers remain fixed. Your team only swaps
+            strategy logic.
+          </p>
+
+          <h3>Architecture</h3>
+          <pre><code>YOUR STRATEGY analyze(MarketData) -> TradeDecision
+            |
+            v
+ERC-8004 Identity -> Vault -> RiskRouter -> Kraken -> EIP-712 Checkpoint</code></pre>
+
+          <h3>Minimal custom strategy</h3>
+          <pre><code>export class MyStrategy implements TradingStrategy {
+  async analyze(data: MarketData): Promise&lt;TradeDecision&gt; {
+    const action = data.price > data.vwap ? "BUY" : "SELL";
+    return {
+      action,
+      asset: "XBT",
+      pair: data.pair,
+      amount: 100,
+      confidence: 0.7,
+      reasoning: `Price ($${data.price}) is ${action === "BUY" ? "above" : "below"} VWAP.`
+    };
+  }
+}</code></pre>
+
+          <h3>Team checklist</h3>
+          <ol>
+            <li>Clone template and install dependencies.</li>
+            <li>Configure .env with chain and Kraken credentials.</li>
+            <li>Deploy contracts or use shared addresses.</li>
+            <li>Run registration and record AGENT_ID.</li>
+            <li>Implement strategy and swap import in agent loop.</li>
+            <li>Run trading loop and dashboard together.</li>
+          </ol>
+
+          <pre><code>npm run run-agent
+npm run dashboard</code></pre>
+        </section>
+
+        <section class="section" id="dashboard">
+          <h2>Dashboard Snapshot</h2>
+          <p>
+            The built-in dashboard at http://localhost:3000 auto-refreshes every 5 seconds and displays
+            live price, latest decision, recent ticks, and checkpoint cards with confidence and signature
+            snippets.
+          </p>
+        </section>
+      </article>
+
+      <aside class="toc-card">
+        <h2>On This Page</h2>
+        <a href="#part-1">Part 1: ERC-8004 Identity</a>
+        <a href="#part-2">Part 2: ERC-721 Registration</a>
+        <a href="#part-3">Part 3: Kraken CLI</a>
+        <a href="#part-4">Part 4: Vault + RiskRouter</a>
+        <a href="#part-5">Part 5: Explanation Layer</a>
+        <a href="#part-6">Part 6: EIP-712 Checkpoints</a>
+        <a href="#part-7">Part 7: Reusable Template</a>
+        <a href="#dashboard">Dashboard</a>
+      </aside>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-grid">
+        <section>
+          <h3>Community innovating and building with artificial intelligence</h3>
+          <p>
+            Unlocking state-of-the-art AI and building with the world's talent.
+          </p>
+          <p class="socials">Instagram · Reddit · Twitter/X · GitHub · Discord · HackerNoon</p>
+        </section>
+
+        <section>
+          <h3>Links</h3>
+          <p>AI Tech · AI Hackathons · AI Tutorials · AI Applications · Surge · AI Articles</p>
+        </section>
+
+        <section>
+          <h3>lablab</h3>
+          <p>About · Brand · Hackathon Guidelines · Terms of Use · Code of Conduct · Privacy Policy</p>
+        </section>
+
+        <section id="footer-sponsor">
+          <h3>Get in touch</h3>
+          <p>Discord · Sponsor · Cooperation · Contribute · community@lablab.ai</p>
+        </section>
+      </div>
+
+      <p class="copyright">© 2026 NativelyAI Inc. All rights reserved. Version 2.8.2</p>
+    </footer>
+  </body>
+</html>

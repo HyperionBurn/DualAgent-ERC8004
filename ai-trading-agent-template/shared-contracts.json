@@ -1,0 +1,34 @@
+{
+  "generatedAt": "2026-04-10T13:28:19.687Z",
+  "expectedChainId": 11155111,
+  "chainId": 11155111,
+  "isSepolia": true,
+  "allContractsPresent": true,
+  "contracts": {
+    "agentRegistry": {
+      "address": "0x97b07dDc405B0c28B17559aFFE63BdB3632d0ca3",
+      "codePresent": true,
+      "codeHash": "0x42d88c5fa4768ed488d851ef9d6d146e7e46c49546f48f199d71a4a876700dfb"
+    },
+    "hackathonVault": {
+      "address": "0x0E7CD8ef9743FEcf94f9103033a044caBD45fC90",
+      "codePresent": true,
+      "codeHash": "0x90ddaaab2c6d723c3599deeea8872494076996cf0a4136629d4cc46eef7017de"
+    },
+    "riskRouter": {
+      "address": "0xd6A6952545FF6E6E6681c2d15C59f9EB8F40FdBC",
+      "codePresent": true,
+      "codeHash": "0x2f9695184fd68fdb8a55ea496104cd0438c24d3fefd91f86726d4965571fbf04"
+    },
+    "reputationRegistry": {
+      "address": "0x423a9904e39537a9997fbaF0f220d79D7d545763",
+      "codePresent": true,
+      "codeHash": "0x000d6ed7411359ae08ebeb51f417636207224a0b9d06687a5e20d14913784d46"
+    },
+    "validationRegistry": {
+      "address": "0x6e0A7C2c158fa535083FDeFA1839273fAc36C9BE",
+      "codePresent": true,
+      "codeHash": "0xd5be4a12962f06d2794414e081edc76a2416fe553f291d67720fe5efed62bc7a"
+    }
+  }
+}

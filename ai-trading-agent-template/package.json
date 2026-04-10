@@ -1,0 +1,50 @@
+{
+  "name": "ai-trading-agent-tutorial",
+  "version": "1.0.0",
+  "description": "Reusable AI trading agent template with on-chain identity (ERC-8004), Kraken execution, and EIP-712 verified explainability",
+  "scripts": {
+    "compile": "npx hardhat compile",
+    "preflight:deploy": "npx ts-node scripts/preflight.ts deploy",
+    "preflight:deploy:sepolia": "npx ts-node scripts/preflight.ts deploy-sepolia",
+    "preflight:register": "npx ts-node scripts/preflight.ts register",
+    "preflight:register:sepolia": "npx ts-node scripts/preflight.ts register-sepolia",
+    "preflight:run-agent": "npx ts-node scripts/preflight.ts run-agent",
+    "deploy": "npm run preflight:deploy && npx hardhat run scripts/deploy.ts --network sepolia",
+    "deploy:sepolia": "npm run preflight:deploy:sepolia && npx hardhat run scripts/deploy.ts --network sepolia -- --verify",
+    "register": "npm run preflight:register:sepolia && npx ts-node scripts/register-agent.ts",
+    "register:sepolia": "npm run preflight:register:sepolia && npx ts-node scripts/register-agent.ts",
+    "preflight:claim": "npx ts-node scripts/preflight.ts claim",
+    "claim": "npm run preflight:claim && npx ts-node scripts/claim.ts",
+    "allocate-sandbox": "npm run preflight:run-agent && npx ts-node scripts/allocate-sandbox-capital.ts",
+    "run-agent": "npm run preflight:run-agent && npx ts-node scripts/run-agent.ts",
+    "dashboard": "npx ts-node scripts/dashboard.ts",
+    "shared:contracts": "npx ts-node scripts/shared-contracts.ts",
+    "llm:smoke": "npx ts-node scripts/llm-smoke.ts",
+    "metrics": "npx ts-node scripts/metrics.ts",
+    "replay": "npx ts-node scripts/replay.ts",
+    "evaluate": "npx ts-node scripts/evaluate.ts",
+    "ui:dev": "npm --prefix ui run dev",
+    "ui:build": "npm --prefix ui run build",
+    "ui:preview": "npm --prefix ui run preview",
+    "report:equity": "npx ts-node scripts/report-equity.ts",
+    "submission:manifest": "npx ts-node scripts/submission-manifest.ts",
+    "submission:manifest:allow-missing": "npx ts-node scripts/submission-manifest.ts --allow-missing",
+    "phase2:evidence": "npx ts-node scripts/phase2-evidence.ts",
+    "test": "npx hardhat test"
+  },
+  "dependencies": {
+    "@types/express": "^5.0.6",
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.1",
+    "ethers": "^6.9.0",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@openzeppelin/contracts": "^5.6.1",
+    "@types/node": "^20.10.0",
+    "hardhat": "^2.19.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.2"
+  }
+}

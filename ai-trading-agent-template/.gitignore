@@ -1,0 +1,53 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ── Environment / Secrets (NEVER COMMIT) ──────────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# Hardhat
+artifacts/
+cache/
+typechain-types/
+coverage/
+coverage.json
+src/typechain/
+
+# IDEs
+.vscode/
+.idea/
+.DS_Store
+
+# AI/Specstory
+.specstory/
+
+# ── Copilot tracking (NEVER COMMIT — exposes strategy) ────────────────────────
+.copilot-tracking/
+
+# ── Runtime locks ─────────────────────────────────────────────────────────────
+.runtime-locks/
+
+# ── Wallet-identifying proofs (NEVER COMMIT) ──────────────────────────────────
+registration-proof*.json
+capital-proof.json
+agent-id.json
+deployed.json
+validation-registry-deployment.json
+replay-summary.json
+
+# ── Build outputs ─────────────────────────────────────────────────────────────
+ui/dist/
+
+# ── Large data / gaming evidence (NEVER COMMIT) ───────────────────────────────
+checkpoints*.jsonl
+fills*.jsonl
+reputation-feedback*.jsonl
+reputation-context*.jsonl
+planner-traces*.jsonl
+message.txt
+*.pdf
