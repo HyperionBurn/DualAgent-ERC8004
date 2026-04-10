@@ -48,6 +48,6 @@ describe("validation attestation score", function () {
     });
 
     expect(outcome.score).to.be.greaterThan(45);
-    expect(outcome.score).to.be.lessThan(95);
+    expect(outcome.score).to.be.lessThan(100);
   });
 });

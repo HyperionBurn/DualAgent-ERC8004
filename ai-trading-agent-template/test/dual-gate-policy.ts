@@ -60,12 +60,12 @@ describe("dual-gate policy", function () {
     });
 
     const result = applyDualGatePolicy({
-      decision: buildDecision({ action: "BUY", confidence: 0.55, amount: 120 }),
+      decision: buildDecision({ action: "BUY", confidence: 0.45, amount: 120 }),
       indicatorSnapshot: snapshot,
       options: {
         enabled: true,
         minNetEdgeBps: 8,
-        probeAmountUsd: 20,
+        probeAmountUsd: 0,
         probeMinConfidence: 0.7,
       },
     });

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-10T13:28:20.052Z",
+  "generatedAt": "2026-04-10T15:16:44.882Z",
   "phase": "phase-2-free-faucet-public-testnet-proof",
   "environment": {
     "expectedChainId": 11155111,
@@ -41,7 +41,7 @@
     "file": "C:\\Users\\wasif\\OneDrive\\Desktop\\trading agent\\ai-trading-agent-template\\shared-contracts.json",
     "found": true,
     "snapshot": {
-      "generatedAt": "2026-04-10T13:28:19.687Z",
+      "generatedAt": "2026-04-10T15:16:44.568Z",
       "expectedChainId": 11155111,
       "chainId": 11155111,
       "isSepolia": true,
@@ -127,10 +127,10 @@
     }
   },
   "demoAssets": {
-    "githubUrl": "https://github.com/hyperionburn/ai-trading-agent-template",
-    "demoUrl": "https://github.com/hyperionburn/ai-trading-agent-template/blob/main/index.html",
-    "videoUrl": "https://github.com/hyperionburn/ai-trading-agent-template/blob/main/docs/DETAILED_WALKTHROUGH.md",
-    "slidesUrl": "https://github.com/hyperionburn/ai-trading-agent-template/blob/main/docs/ARCHITECTURE.md"
+    "githubUrl": "https://github.com/HyperionBurn/DualAgent-ERC8004",
+    "demoUrl": "https://github.com/HyperionBurn/DualAgent-ERC8004",
+    "videoUrl": "https://github.com/HyperionBurn/DualAgent-ERC8004/blob/main/ai-trading-agent-template/docs/DETAILED_WALKTHROUGH.md",
+    "slidesUrl": "https://github.com/HyperionBurn/DualAgent-ERC8004/blob/main/ai-trading-agent-template/docs/ARCHITECTURE.md"
   },
   "artifactIdentity": {
     "expectedAgentId": "5",
