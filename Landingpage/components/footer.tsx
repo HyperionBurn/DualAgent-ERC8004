@@ -3,10 +3,12 @@
 import { motion } from "framer-motion";
 import { Shield, Github, Twitter, ExternalLink } from "lucide-react";
 
+const githubRepoUrl = "https://github.com/HyperionBurn/DualAgent-ERC8004";
+
 const protocolLinks = [
   { label: "ERC-8004 Spec", href: "https://eips.ethereum.org/EIPS/eip-8004", external: true },
   { label: "Documentation", href: "#evidence" },
-  { label: "GitHub Repository", href: "https://github.com", external: true },
+  { label: "GitHub Repository", href: githubRepoUrl, external: true },
   { label: "Audit Reports", href: "#audit" },
 ];
 
@@ -90,7 +92,7 @@ export function Footer() {
           </p>
           <div className="flex items-center gap-4">
             <a
-              href="https://github.com"
+              href={githubRepoUrl}
               target="_blank"
               rel="noreferrer"
               className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card/50 text-muted-foreground hover:text-foreground hover:border-muted-foreground/30 transition-colors"
@@ -98,12 +100,12 @@ export function Footer() {
               <Github className="h-4 w-4" />
             </a>
             <a
-              href="https://x.com"
+              href="https://eips.ethereum.org/EIPS/eip-8004"
               target="_blank"
               rel="noreferrer"
               className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card/50 text-muted-foreground hover:text-foreground hover:border-muted-foreground/30 transition-colors"
             >
-              <Twitter className="h-4 w-4" />
+              <ExternalLink className="h-4 w-4" />
             </a>
           </div>
         </div>

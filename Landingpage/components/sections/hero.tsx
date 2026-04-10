@@ -5,6 +5,8 @@ import Link from "next/link";
 import { ArrowRight, Shield, Lock, Fingerprint } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+const githubRepoUrl = "https://github.com/HyperionBurn/DualAgent-ERC8004";
+
 export function Hero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center px-6 pt-32 pb-20 overflow-hidden">
@@ -88,6 +90,11 @@ export function Hero() {
           </Button>
           <Button asChild variant="outline" size="lg" className="border-border bg-card/50 backdrop-blur-sm hover:bg-card hover:border-muted-foreground/30 px-8 py-6 text-base">
             <Link href="#evidence">View Evidence</Link>
+          </Button>
+          <Button asChild variant="ghost" size="lg" className="px-8 py-6 text-base text-muted-foreground hover:text-foreground hover:bg-card/40">
+            <a href={githubRepoUrl} target="_blank" rel="noreferrer">
+              Source Code
+            </a>
           </Button>
         </motion.div>
 
