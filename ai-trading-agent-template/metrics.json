@@ -1,0 +1,123 @@
+{
+  "generatedAt": "2026-04-10T13:22:25.111Z",
+  "files": {
+    "checkpointsFile": "C:\\Users\\wasif\\OneDrive\\Desktop\\trading agent\\ai-trading-agent-template\\checkpoints-5.jsonl",
+    "fillsFile": "C:\\Users\\wasif\\OneDrive\\Desktop\\trading agent\\ai-trading-agent-template\\fills-5.jsonl"
+  },
+  "summary": {
+    "agentId": "5",
+    "mode": "kraken",
+    "netPnlUsd": 0.47,
+    "realizedPnlUsd": 0,
+    "unrealizedPnlUsd": 0.47,
+    "maxDrawdownBps": 2,
+    "currentDrawdownBps": 1,
+    "drawdownHeadroomBps": 499,
+    "currentEquityUsd": 10000.47,
+    "peakEquityUsd": 10001.37,
+    "cppiScale": 1,
+    "cppiFloorUsd": 9501.3,
+    "cppiCushionUsd": 499.17,
+    "averageValidationScore": 99,
+    "validationSource": "validation-registry",
+    "validationCoveragePct": 100,
+    "averageReputationScore": 93,
+    "reputationSource": "reputation-registry",
+    "reputationFeedbackCount": 73,
+    "latestValidationConfidence": 0.95,
+    "latestValidationEdgeSurplusBps": 0,
+    "latestValidationRiskGateStatus": "none",
+    "latestValidationFillExecuted": false,
+    "latestValidationRegimeConfidence": 0,
+    "latestValidationSignalSummary": "conf=0.95 edgeSurplus=0.00bps risk=none fill=false regime=0.00",
+    "riskAdjustedProfitabilityScore": 50.09,
+    "drawdownControlScore": 99.96,
+    "validationQualityScore": 99,
+    "objectiveReputationScore": 93,
+    "compositeScore": 78.78,
+    "freshScoreWindowRecommended": false,
+    "freshScoreWindowReason": "validation 99.00/82 and reputation 93.00/90 are within the current window (0.00)",
+    "checkpointCount": 62,
+    "fillCount": 15,
+    "openPositionBase": 0.005184,
+    "recentFlow": "HOLD -> HOLD -> HOLD -> HOLD -> BUY"
+  },
+  "leaderboard": [
+    {
+      "rank": 1,
+      "agentId": "5",
+      "netPnlUsd": 0.47,
+      "maxDrawdownBps": 2,
+      "validationScore": 99,
+      "reputationScore": 93,
+      "compositeScore": 78.78,
+      "checkpointCount": 62
+    }
+  ],
+  "recentActions": [
+    {
+      "timestamp": 1775825938,
+      "action": "HOLD",
+      "pair": "XBTUSD",
+      "amountUsd": 0,
+      "confidence": 0.95,
+      "reasoning": "Indicator bias=bullish regime=trend-up@0.79 score=2.10 conf=0.95. EMA8/21=71878.43/71795.71, MACD hist=26.1995, RSI14=84.66. Expected edge 36.35bps - cost drag 2.00bps = net 34.35bps (threshold 1.00bps). Breakout=100.00%, spread=1.00bps, VWAP premium=0.0000%. BUY setup confirmed by indicator stack with risk gates satisfied. [DUAL-GATE reduced to probe 25.00USD: planner=BUY deterministic=SELL.] [CIRCUIT-BREAKER blocked: daily-loss-11.20]"
+    },
+    {
+      "timestamp": 1775825892,
+      "action": "HOLD",
+      "pair": "XBTUSD",
+      "amountUsd": 0,
+      "confidence": 0.95,
+      "reasoning": "Indicator bias=bullish regime=trend-up@0.79 score=2.10 conf=0.95. EMA8/21=71878.21/71795.62, MACD hist=26.1370, RSI14=84.64. Expected edge 36.33bps - cost drag 2.00bps = net 34.33bps (threshold 1.00bps). Breakout=100.00%, spread=1.00bps, VWAP premium=0.0000%. BUY setup confirmed by indicator stack with risk gates satisfied. [DUAL-GATE reduced to probe 25.00USD: planner=BUY deterministic=SELL.] [CIRCUIT-BREAKER blocked: daily-loss-11.20]"
+    },
+    {
+      "timestamp": 1775825833,
+      "action": "HOLD",
+      "pair": "XBTUSD",
+      "amountUsd": 0,
+      "confidence": 0.95,
+      "reasoning": "Indicator bias=bullish regime=trend-up@0.80 score=2.10 conf=0.95. EMA8/21=71882.11/71797.21, MACD hist=27.2570, RSI14=85.04. Expected edge 36.64bps - cost drag 2.00bps = net 34.64bps (threshold 1.00bps). Breakout=100.00%, spread=1.00bps, VWAP premium=0.0000%. BUY setup confirmed by indicator stack with risk gates satisfied. [DUAL-GATE reduced to probe 25.00USD: planner=BUY deterministic=SELL.] [CIRCUIT-BREAKER blocked: daily-loss-10.87]"
+    },
+    {
+      "timestamp": 1775825781,
+      "action": "HOLD",
+      "pair": "XBTUSD",
+      "amountUsd": 0,
+      "confidence": 0.95,
+      "reasoning": "Indicator bias=bullish regime=trend-up@0.80 score=2.10 conf=0.95. EMA8/21=71882.11/71797.21, MACD hist=27.2570, RSI14=85.04. Expected edge 36.64bps - cost drag 2.00bps = net 34.64bps (threshold 1.00bps). Breakout=100.00%, spread=1.00bps, VWAP premium=0.0000%. BUY setup confirmed by indicator stack with risk gates satisfied. [DUAL-GATE reduced to probe 25.00USD: planner=BUY deterministic=HOLD.] [CIRCUIT-BREAKER blocked: daily-loss-10.87]"
+    },
+    {
+      "timestamp": 1775825734,
+      "action": "BUY",
+      "pair": "XBTUSD",
+      "amountUsd": 24.9,
+      "confidence": 0.95,
+      "reasoning": "Indicator bias=bullish regime=trend-up@0.79 score=2.10 conf=0.95. EMA8/21=71874.26/71794.00, MACD hist=25.0036, RSI14=84.21. Expected edge 36.02bps - cost drag 2.00bps = net 34.02bps (threshold 1.00bps). Breakout=100.00%, spread=1.00bps, VWAP premium=0.0000%. BUY setup confirmed by indicator stack with risk gates satisfied. [DUAL-GATE reduced to probe 25.00USD: planner=BUY deterministic=HOLD.] [CPPI size-adjusted to 24.90USD (scale=0.996)]"
+    },
+    {
+      "timestamp": 1775825659,
+      "action": "BUY",
+      "pair": "XBTUSD",
+      "amountUsd": 24.93,
+      "confidence": 0.95,
+      "reasoning": "Indicator bias=bullish regime=trend-up@0.80 score=2.10 conf=0.95. EMA8/21=71886.02/71798.81, MACD hist=28.3802, RSI14=85.42. Expected edge 36.94bps - cost drag 2.00bps = net 34.94bps (threshold 1.00bps). Breakout=100.00%, spread=1.00bps, VWAP premium=0.0000%. BUY setup confirmed by indicator stack with risk gates satisfied. [DUAL-GATE reduced to probe 25.00USD: planner=BUY deterministic=HOLD.] [CPPI size-adjusted to 24.93USD (scale=0.997)]"
+    },
+    {
+      "timestamp": 1775825600,
+      "action": "BUY",
+      "pair": "XBTUSD",
+      "amountUsd": 24.98,
+      "confidence": 0.95,
+      "reasoning": "Indicator bias=bullish regime=trend-up@0.81 score=2.10 conf=0.95. EMA8/21=71891.62/71801.10, MACD hist=29.9884, RSI14=85.93. Expected edge 37.38bps - cost drag 2.00bps = net 35.38bps (threshold 1.00bps). Breakout=100.00%, spread=1.00bps, VWAP premium=0.0000%. BUY setup confirmed by indicator stack with risk gates satisfied. [DUAL-GATE reduced to probe 25.00USD: planner=BUY deterministic=HOLD.] [CPPI size-adjusted to 24.98USD (scale=0.999)]"
+    },
+    {
+      "timestamp": 1775825540,
+      "action": "BUY",
+      "pair": "XBTUSD",
+      "amountUsd": 24.98,
+      "confidence": 0.95,
+      "reasoning": "Indicator bias=bullish regime=trend-up@0.82 score=2.10 conf=0.95. EMA8/21=71904.28/71806.28, MACD hist=33.6234, RSI14=86.96. Expected edge 38.36bps - cost drag 2.00bps = net 36.36bps (threshold 1.00bps). Breakout=100.00%, spread=1.00bps, VWAP premium=0.0000%. BUY setup confirmed by indicator stack with risk gates satisfied. [DUAL-GATE reduced to probe 25.00USD: planner=BUY deterministic=HOLD.] [CPPI size-adjusted to 24.98USD (scale=0.999)]"
+    }
+  ]
+}

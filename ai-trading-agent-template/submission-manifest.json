@@ -1,0 +1,33 @@
+{
+  "generatedAt": "2026-04-10T13:28:37.622Z",
+  "links": {
+    "githubRepository": "https://github.com/hyperionburn/ai-trading-agent-template",
+    "demoUrl": "https://github.com/hyperionburn/ai-trading-agent-template/blob/main/index.html",
+    "videoUrl": "https://github.com/hyperionburn/ai-trading-agent-template/blob/main/docs/DETAILED_WALKTHROUGH.md",
+    "slidesUrl": "https://github.com/hyperionburn/ai-trading-agent-template/blob/main/docs/ARCHITECTURE.md"
+  },
+  "evidence": {
+    "sharedContracts": "shared-contracts.json",
+    "capitalProof": "capital-proof.json",
+    "registrationProof": "registration-proof.json",
+    "metrics": "metrics.json",
+    "equityReport": "equity-report.json",
+    "reputationFeedback": "reputation-feedback.jsonl",
+    "phase2Evidence": "phase2-evidence.json"
+  },
+  "proofSummary": {
+    "selectedRunLabel": null,
+    "oneShotGatePass": null,
+    "validationSource": "validation-registry",
+    "validationCoveragePct": 100,
+    "reputationSource": "reputation-registry",
+    "reputationFeedbackCount": 73
+  },
+  "readiness": {
+    "hasAllRequiredLinks": true,
+    "hasAllRequiredEvidence": true,
+    "missingFields": [],
+    "missingEvidenceFiles": [],
+    "strictMode": true
+  }
+}

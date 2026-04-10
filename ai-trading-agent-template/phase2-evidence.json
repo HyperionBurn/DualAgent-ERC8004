@@ -1,0 +1,403 @@
+{
+  "generatedAt": "2026-04-10T13:28:20.052Z",
+  "phase": "phase-2-free-faucet-public-testnet-proof",
+  "environment": {
+    "expectedChainId": 11155111,
+    "configuredChainId": "11155111",
+    "executionMode": "kraken",
+    "marketDataMode": "prism",
+    "plannerProvider": "groq",
+    "rpcConfigured": true,
+    "reputationLoopEnabled": true,
+    "submissionStrict": true,
+    "maxArtifactAgeMinutes": 1440,
+    "oneShotThresholds": {
+      "enforceOneShot": true,
+      "minCheckpointCount": 30,
+      "maxCheckpointCount": 60,
+      "minFillCount": 5,
+      "maxFillCount": 15,
+      "minNetPnlUsd": 0.01,
+      "maxDrawdownBps": 500,
+      "minValidationCoveragePct": 70,
+      "minValidationScore": 82,
+      "minReputationScore": 90,
+      "requireValidationRegistry": true,
+      "minReputationFeedbackCount": 6,
+      "minReputationDistinctRaterCount": 3,
+      "requireReputationRegistry": true
+    }
+  },
+  "runContext": {
+    "runLabel": null,
+    "parameters": {
+      "maxTradeUsd": 25,
+      "maxTradesPerHour": 8,
+      "maxSlippageBps": 50,
+      "minConfidence": 0.5
+    }
+  },
+  "sharedContracts": {
+    "file": "C:\\Users\\wasif\\OneDrive\\Desktop\\trading agent\\ai-trading-agent-template\\shared-contracts.json",
+    "found": true,
+    "snapshot": {
+      "generatedAt": "2026-04-10T13:28:19.687Z",
+      "expectedChainId": 11155111,
+      "chainId": 11155111,
+      "isSepolia": true,
+      "allContractsPresent": true,
+      "contracts": {
+        "agentRegistry": {
+          "address": "0x97b07dDc405B0c28B17559aFFE63BdB3632d0ca3",
+          "codePresent": true,
+          "codeHash": "0x42d88c5fa4768ed488d851ef9d6d146e7e46c49546f48f199d71a4a876700dfb"
+        },
+        "hackathonVault": {
+          "address": "0x0E7CD8ef9743FEcf94f9103033a044caBD45fC90",
+          "codePresent": true,
+          "codeHash": "0x90ddaaab2c6d723c3599deeea8872494076996cf0a4136629d4cc46eef7017de"
+        },
+        "riskRouter": {
+          "address": "0xd6A6952545FF6E6E6681c2d15C59f9EB8F40FdBC",
+          "codePresent": true,
+          "codeHash": "0x2f9695184fd68fdb8a55ea496104cd0438c24d3fefd91f86726d4965571fbf04"
+        },
+        "reputationRegistry": {
+          "address": "0x423a9904e39537a9997fbaF0f220d79D7d545763",
+          "codePresent": true,
+          "codeHash": "0x000d6ed7411359ae08ebeb51f417636207224a0b9d06687a5e20d14913784d46"
+        },
+        "validationRegistry": {
+          "address": "0x6e0A7C2c158fa535083FDeFA1839273fAc36C9BE",
+          "codePresent": true,
+          "codeHash": "0xd5be4a12962f06d2794414e081edc76a2416fe553f291d67720fe5efed62bc7a"
+        }
+      }
+    }
+  },
+  "capitalProof": {
+    "file": "C:\\Users\\wasif\\OneDrive\\Desktop\\trading agent\\ai-trading-agent-template\\capital-proof.json",
+    "found": true,
+    "proof": {
+      "generatedAt": "2026-04-09T16:57:39.592Z",
+      "chainId": 11155111,
+      "vaultAddress": "0x0E7CD8ef9743FEcf94f9103033a044caBD45fC90",
+      "claimer": "0x852CFC877f560DB6D401d38df650EeCD478Efd93",
+      "agentId": "53",
+      "claimStatus": "claimed",
+      "claimTxHash": "0x701876e52e03db5680afdf9c662fa8fe2bd9cc3152031c36604063ff66f9d8ce",
+      "claimError": null,
+      "allocatedBeforeEth": 0,
+      "allocatedAfterEth": 0.001,
+      "claimedDeltaEth": 0.001,
+      "totalVaultBalanceBeforeEth": 0.095000000036,
+      "totalVaultBalanceAfterEth": 0.095000000036,
+      "unallocatedBeforeEth": 0.051000000036,
+      "unallocatedAfterEth": 0.050000000036
+    }
+  },
+  "registration": {
+    "file": "C:\\Users\\wasif\\OneDrive\\Desktop\\trading agent\\ai-trading-agent-template\\registration-proof.json",
+    "found": true,
+    "proof": {
+      "generatedAt": "2026-04-10T13:25:43.866Z",
+      "chainId": 11155111,
+      "registryAddress": "0x97b07dDc405B0c28B17559aFFE63BdB3632d0ca3",
+      "operatorWallet": "0x982E92b3ef679e00EF933148E27Cca62BBe7C1eF",
+      "agentSigner": "0x982E92b3ef679e00EF933148E27Cca62BBe7C1eF",
+      "agentWallet": "0x982E92b3ef679e00EF933148E27Cca62BBe7C1eF",
+      "agentId": "5",
+      "registrationTxHash": "0x35a750c2d085d50106b1b6e2bde04a0c17e32cb075ff095705e3cd54b84b5429",
+      "signatureProof": {
+        "nonce": "0",
+        "contentHash": "0xad173d8db551157308b45b1e169141bd9d9c9d23457cf60c0bd85f6a8338cd5e",
+        "valid": true
+      }
+    }
+  },
+  "submissionManifest": {
+    "file": "C:\\Users\\wasif\\OneDrive\\Desktop\\trading agent\\ai-trading-agent-template\\submission-manifest.json",
+    "found": true,
+    "readiness": {
+      "hasAllRequiredLinks": true,
+      "hasAllRequiredEvidence": true,
+      "missingFields": [],
+      "missingEvidenceFiles": [],
+      "strictMode": true
+    }
+  },
+  "demoAssets": {
+    "githubUrl": "https://github.com/hyperionburn/ai-trading-agent-template",
+    "demoUrl": "https://github.com/hyperionburn/ai-trading-agent-template/blob/main/index.html",
+    "videoUrl": "https://github.com/hyperionburn/ai-trading-agent-template/blob/main/docs/DETAILED_WALKTHROUGH.md",
+    "slidesUrl": "https://github.com/hyperionburn/ai-trading-agent-template/blob/main/docs/ARCHITECTURE.md"
+  },
+  "artifactIdentity": {
+    "expectedAgentId": "5",
+    "checkpoints": {
+      "file": "C:\\Users\\wasif\\OneDrive\\Desktop\\trading agent\\ai-trading-agent-template\\checkpoints-5.jsonl",
+      "found": true,
+      "count": 60,
+      "agentIds": [
+        "5"
+      ],
+      "missingAgentIdRows": 0
+    },
+    "fills": {
+      "file": "C:\\Users\\wasif\\OneDrive\\Desktop\\trading agent\\ai-trading-agent-template\\fills-5.jsonl",
+      "found": true,
+      "count": 15,
+      "agentIds": [
+        "5"
+      ],
+      "missingAgentIdRows": 0
+    },
+    "traces": {
+      "file": "C:\\Users\\wasif\\OneDrive\\Desktop\\trading agent\\ai-trading-agent-template\\planner-traces-5.jsonl",
+      "found": false,
+      "count": 0,
+      "agentIds": [],
+      "missingAgentIdRows": 0
+    },
+    "reputation": {
+      "file": "C:\\Users\\wasif\\OneDrive\\Desktop\\trading agent\\ai-trading-agent-template\\reputation-feedback-5.jsonl",
+      "found": true,
+      "count": 40,
+      "agentIds": [
+        "5"
+      ],
+      "missingAgentIdRows": 0
+    },
+    "pass": true,
+    "failReasons": []
+  },
+  "runtimeEvidence": {
+    "checkpointsFile": "C:\\Users\\wasif\\OneDrive\\Desktop\\trading agent\\ai-trading-agent-template\\checkpoints-5.jsonl",
+    "checkpointCount": 60,
+    "checkpointsWithHash": 60,
+    "fillsFile": "C:\\Users\\wasif\\OneDrive\\Desktop\\trading agent\\ai-trading-agent-template\\fills-5.jsonl",
+    "fillCount": 15,
+    "tracesFile": "C:\\Users\\wasif\\OneDrive\\Desktop\\trading agent\\ai-trading-agent-template\\planner-traces-5.jsonl",
+    "traceCount": 0,
+    "reputationFeedbackFile": "C:\\Users\\wasif\\OneDrive\\Desktop\\trading agent\\ai-trading-agent-template\\reputation-feedback-5.jsonl",
+    "reputationFeedbackCount": 40,
+    "reputationDistinctRaterCount": 40,
+    "distinctReputationRaters": [
+      "0x7ea7b026a467dfd11ae0162c64ce330a891b7190",
+      "0xe19e087e871332bf2c47b048ad3e849391d56ead",
+      "0xd9fb153499ac653e542b4968e94f98905621a9b6",
+      "0xeb141735d9828e66c0fe3a7a96ad9e0190f78724",
+      "0x5d3806220df2738842b79f44a94a4de47f71eae2",
+      "0xd7f0ddc7e0f92aac1bd39643f060d1400d0307ce",
+      "0xcbfa99e314db07f1b52f09c3eea7f0db539e7cbf",
+      "0x7c09e55af5bb8f4552caecb9c03a80ed8c83fe76",
+      "0x36c678ddaada5562a555e31056e06dbfe7263ab3",
+      "0xf8848de73a8a1e353ca8c3f179515d67b8aafbb9",
+      "0x30d0879065e796a7603b4810461b43d387be9877",
+      "0x0d359c8c13da6973ed1ae1490aab03f75cdb694c",
+      "0x44778211fa8b0e7d97bdc8970fd8642e6e81d18c",
+      "0x4f6fc213a47a39703eb2c6df1b74e9b7ae4f3c57",
+      "0xe97c4b5c8b3b8fadcbc257827308236b189058ec",
+      "0x4fb52f6111daef28ac34646286c838046418f5da",
+      "0x087a558b8530caf80d7b5087b1dc1f8e4ec60283",
+      "0x3cd8f6ae0066e77cec0e5bad3a69b6244770ac32",
+      "0xf1437a7ad385030ca264d60ebc522ed56dd16fb4",
+      "0x3850c1ea6fc64440185a68f458cc7fb3af61d8a3",
+      "0x4641af0153dd72ce380953b6a273c4b125d50d8d",
+      "0x203416f6823a208b6abe3cf8c36a6760dbd2ebaf",
+      "0x15c1e9a13ca50a5f5d183b281d56debfb4f39526",
+      "0xd9f3303a614cb82ec5df33367adff6ad59790aef",
+      "0xd00158479022051b857ec04afa2c8d9ea1e6ceaf",
+      "0x044e49d123586c52d3a8582753a4ebca26b62311",
+      "0xff1bb844476c3d4812bf32fde037c850493250a6",
+      "0x0149450f3d49e4ff487021b648020f46242a5217",
+      "0xd6a1ff003cf723e2de3c4f946ca42551e7974935",
+      "0x0b650d19886f4de6cf0883ea21c9a8be3a7e9a40",
+      "0x88dc81758b531d15887a70576315499a6d18f1ae",
+      "0xaf699a89ab5ab55ab7005b9b4433efb17f640a8e",
+      "0x3a28f29e9858eb296a628baad66cd9f398ffe37a",
+      "0xfc1e75edf971dd6342d3b7b6cd73a39667651124",
+      "0xe24f8dabca722bc48138330407aea122a5245a48",
+      "0x44016b3472363626851fde09e95faf80d746f50a",
+      "0x34cd0c61492cc10b86d110b9872b2f65f36e22c7",
+      "0x7cf28c86d0430477c2572b6c666203d78dde25f7",
+      "0xbbdc6c30a1575601b2668e8dc3e6ef33732d3abc",
+      "0xbd5b7ce87b4b7c16b16a45f29bb8038121dafdbb"
+    ],
+    "metricsFile": "C:\\Users\\wasif\\OneDrive\\Desktop\\trading agent\\ai-trading-agent-template\\metrics-5.json",
+    "metricsFound": true,
+    "metricsSummary": {
+      "agentId": "5",
+      "mode": "kraken",
+      "netPnlUsd": 0.47,
+      "realizedPnlUsd": 0,
+      "unrealizedPnlUsd": 0.47,
+      "maxDrawdownBps": 2,
+      "currentDrawdownBps": 1,
+      "drawdownHeadroomBps": 499,
+      "currentEquityUsd": 10000.47,
+      "peakEquityUsd": 10001.37,
+      "cppiScale": 1,
+      "cppiFloorUsd": 9501.3,
+      "cppiCushionUsd": 499.17,
+      "averageValidationScore": 99,
+      "validationSource": "validation-registry",
+      "validationCoveragePct": 100,
+      "averageReputationScore": 93,
+      "reputationSource": "reputation-registry",
+      "reputationFeedbackCount": 73,
+      "latestValidationConfidence": 0.95,
+      "latestValidationEdgeSurplusBps": 0,
+      "latestValidationRiskGateStatus": "none",
+      "latestValidationFillExecuted": false,
+      "latestValidationRegimeConfidence": 0,
+      "latestValidationSignalSummary": "conf=0.95 edgeSurplus=0.00bps risk=none fill=false regime=0.00",
+      "riskAdjustedProfitabilityScore": 50.09,
+      "drawdownControlScore": 99.96,
+      "validationQualityScore": 99,
+      "objectiveReputationScore": 93,
+      "compositeScore": 78.78,
+      "freshScoreWindowRecommended": false,
+      "freshScoreWindowReason": "validation 99.00/82 and reputation 93.00/90 are within the current window (0.00)",
+      "checkpointCount": 62,
+      "fillCount": 15,
+      "openPositionBase": 0.005184,
+      "recentFlow": "HOLD -> HOLD -> HOLD -> HOLD -> BUY"
+    }
+  },
+  "routerEnforcement": {
+    "agentId": "5",
+    "guardrails": {
+      "source": "shared-router-riskParams",
+      "maxPositionUsd": 0,
+      "maxDrawdownBps": 0,
+      "maxTradesPerHour": 0,
+      "active": false,
+      "defaultCapUsd": 1000
+    },
+    "tradeRecord": {
+      "count": "4",
+      "windowStart": "1775825532"
+    },
+    "currentNonce": "131",
+    "domainSeparator": "0xe27c10faffc5cfbabe739cc3c1a5132fcf421955ec229b8b4f768238eae37fc6",
+    "queryError": null,
+    "agentWallet": "0x982E92b3ef679e00EF933148E27Cca62BBe7C1eF",
+    "pair": "XBTUSD",
+    "smallTrade": {
+      "amountUsd": 50,
+      "approved": true,
+      "reason": ""
+    },
+    "oversizedTrade": {
+      "amountUsd": 5000,
+      "approved": false,
+      "reason": "No risk params: exceeds $1000 default cap"
+    }
+  },
+  "drawdownEvidence": {
+    "file": "C:\\Users\\wasif\\OneDrive\\Desktop\\trading agent\\ai-trading-agent-template\\equity-report-5.json",
+    "found": true,
+    "stale": false,
+    "report": {
+      "source": "local-derived",
+      "asOfTimestamp": 1775827440,
+      "asOfIso": "2026-04-10T13:24:00.545Z",
+      "lastPriceUsd": 72257.35,
+      "peakEquityUsd": 10001.37,
+      "currentEquityUsd": 10000.47,
+      "maxDrawdownBps": 2,
+      "currentDrawdownBps": 1
+    }
+  },
+  "evidenceDepth": {
+    "enabled": true,
+    "minCheckpointCount": 30,
+    "maxCheckpointCount": 60,
+    "checkpointCount": 60,
+    "checkpointRangePass": true,
+    "minFillCount": 5,
+    "maxFillCount": 15,
+    "fillCount": 15,
+    "fillRangePass": true,
+    "pass": true,
+    "reasons": []
+  },
+  "runQuality": {
+    "enabled": true,
+    "minNetPnlUsd": 0.01,
+    "maxDrawdownBps": 500,
+    "netPnlUsd": 0.47,
+    "maxDrawdownObservedBps": 2,
+    "pnlPass": true,
+    "drawdownPass": true,
+    "pass": true,
+    "reasons": []
+  },
+  "checks": {
+    "strictSepoliaProofIntegrity": {
+      "pass": true,
+      "reason": "Shared Sepolia contracts are snapshotted with live bytecode checks"
+    },
+    "capitalClaimProof": {
+      "pass": true,
+      "reason": "Capital claim proof includes Sepolia tx hash and positive allocated balance"
+    },
+    "registrationProofCompleteness": {
+      "pass": true,
+      "reason": "Registration proof includes matching Sepolia identity and valid typed-signature proof"
+    },
+    "artifactIdentityIntegrity": {
+      "pass": true,
+      "reason": "All runtime artifacts belong to the configured agent"
+    },
+    "submissionAssetManifesting": {
+      "pass": true,
+      "reason": "Submission manifest includes all required public links and evidence files"
+    },
+    "validationEvidenceCoverage": {
+      "pass": true,
+      "reason": "Current checkpoints are backed by validation evidence with >= 70% coverage and >= 82 score"
+    },
+    "compositeScoreOutput": {
+      "pass": true,
+      "reason": "metrics.json contains a coherent score story for the submission agent"
+    },
+    "reputationEvidence": {
+      "pass": true,
+      "reason": "Objective reputation evidence is present with >= 90 score, >= 6 feedback records, and >= 3 distinct raters"
+    },
+    "evidenceDepth": {
+      "pass": true,
+      "reason": "Checkpoint/fill depth is within target ranges (30-60 checkpoints, 5-15 fills)"
+    },
+    "runQuality": {
+      "pass": true,
+      "reason": "Run quality gates are satisfied (net PnL > 0.01, drawdown <= 500 bps)"
+    },
+    "routerEnforcement": {
+      "pass": true,
+      "reason": "Shared router enforcement proof includes nonce/trade record reads and live simulateIntent approvals/rejections"
+    },
+    "drawdownEvidence": {
+      "pass": true,
+      "reason": "Local equity and drawdown evidence is present and fresh"
+    }
+  },
+  "failReasons": [],
+  "readyForSubmission": {
+    "hasSharedSepoliaContracts": true,
+    "hasCapitalProof": true,
+    "hasRegistrationProof": true,
+    "hasArtifactIdentityIntegrity": true,
+    "hasSubmissionAssets": true,
+    "hasValidationEvidence": true,
+    "hasCompositeScoreOutput": true,
+    "hasObjectiveReputation": true,
+    "hasEvidenceDepth": true,
+    "hasRunQuality": true,
+    "hasRouterEnforcement": true,
+    "hasDrawdownEvidence": true,
+    "allChecksPassed": true
+  }
+}
