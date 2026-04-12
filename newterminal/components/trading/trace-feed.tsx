@@ -50,7 +50,7 @@ export function TraceFeed({ traces }: TraceFeedProps) {
           </div>
         ) : (
           traces.map((trace, index) => {
-            const id = `${trace.timestamp}-${trace.model}`;
+            const id = `${trace.agentId ?? ""}-${trace.timestamp}-${trace.model}-${index}`;
             const isExpanded = expandedId === id;
             const modelStyle = getModelIcon(trace.model);
             

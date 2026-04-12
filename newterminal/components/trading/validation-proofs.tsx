@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { ShieldCheck, ExternalLink, CheckCircle2, Clock } from 'lucide-react';
+import { EtherscanLink } from './etherscan-link';
 import type { Attestation } from '@/lib/trading-types';
 
 interface ValidationProofsProps {
@@ -10,6 +11,7 @@ interface ValidationProofsProps {
 
 export function ValidationProofs({ attestations }: ValidationProofsProps) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const recentAttestations = attestations.slice(0, 5);
 
   const formatTimeAgo = (timestamp: number) => {
     const seconds = Math.floor((Date.now() - timestamp) / 1000);
@@ -44,12 +46,12 @@ export function ValidationProofs({ attestations }: ValidationProofsProps) {
 
       {/* Proof Chain */}
       <div className="space-y-3">
-        {attestations.length === 0 ? (
+        {recentAttestations.length === 0 ? (
           <div className="text-center py-6 text-muted-foreground text-sm">
             No attestations yet
           </div>
         ) : (
-          attestations.map((attestation, index) => {
+          recentAttestations.map((attestation, index) => {
             const hash = attestation.checkpointHash ?? attestation.intentHash ?? '—';
             const isExpanded = expandedId === hash;
             
@@ -60,7 +62,7 @@ export function ValidationProofs({ attestations }: ValidationProofsProps) {
                 style={{ animationDelay: `${index * 50}ms` }}
               >
                 {/* Chain connector */}
-                {index < attestations.length - 1 && (
+                {index < recentAttestations.length - 1 && (
                   <div className="absolute left-4 top-12 w-0.5 h-6 bg-border" />
                 )}
                 
@@ -80,9 +82,7 @@ export function ValidationProofs({ attestations }: ValidationProofsProps) {
                   <div className="flex-1 min-w-0 space-y-2">
                     {/* Hash & Score */}
                     <div className="flex items-center justify-between gap-2">
-                      <code className="font-mono text-xs bg-secondary px-2 py-1 rounded truncate max-w-[120px]">
-                        {hash.slice(0, 10)}...{hash.slice(-6)}
-                      </code>
+                      <EtherscanLink hash={hash} className="text-xs bg-secondary px-2 py-1 rounded truncate max-w-[180px]" />
                       <div className={`flex items-center gap-1 px-2 py-0.5 rounded border text-xs font-mono font-semibold ${getScoreColor(attestation.score)} ${getScoreGlow(attestation.score)}`}>
                         {attestation.score}
                       </div>
@@ -111,15 +111,12 @@ export function ValidationProofs({ attestations }: ValidationProofsProps) {
 
                     {/* Etherscan link */}
                     {attestation.txid && (
-                      <a
-                        href={`https://sepolia.etherscan.io/tx/${attestation.txid}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors"
-                      >
-                        <ExternalLink className="w-3 h-3" />
-                        View on Etherscan
-                      </a>
+                      <EtherscanLink
+                        hash={attestation.txid}
+                        type="tx"
+                        label="View on Etherscan"
+                        className="text-xs"
+                      />
                     )}
                   </div>
                 </div>

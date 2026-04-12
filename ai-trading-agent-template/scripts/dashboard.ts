@@ -366,7 +366,12 @@ app.get("/api/market-context", (_req, res) => {
 app.get("/api/status", (_req, res) => {
   const mode = (process.env.EXECUTION_MODE || "mock").toLowerCase();
   const strategy = inferStrategy();
-  const agentRuntime = getSingleInstanceLockSnapshot(runAgentServiceName);
+  // Check both agent 5 and agent 53 lock files for running status
+  const agent5Runtime = getSingleInstanceLockSnapshot("run-agent-5");
+  const agent53Runtime = getSingleInstanceLockSnapshot("run-agent-53");
+  const defaultRuntime = getSingleInstanceLockSnapshot(runAgentServiceName);
+  const agentRunning = agent5Runtime.isRunning || agent53Runtime.isRunning || defaultRuntime.isRunning;
+  const primaryRuntime = agent5Runtime.isRunning ? agent5Runtime : agent53Runtime.isRunning ? agent53Runtime : defaultRuntime;
   const riskSnapshot = readRiskSnapshot();
   const readinessSnapshot = readReadinessSnapshot();
   const reputationContext = readReputationContextSummary(expectedAgentId);
@@ -379,8 +384,8 @@ app.get("/api/status", (_req, res) => {
     strategy,
     plannerProvider: strategy === "llm" ? getConfiguredPlannerProvider() ?? "none" : "disabled",
     sandbox:       mode === "kraken" ? process.env.KRAKEN_SANDBOX !== "false" : true,
-    agentRunning:  agentRuntime.isRunning,
-    agentRuntimePid: agentRuntime.metadata?.pid ?? null,
+    agentRunning:  agentRunning,
+    agentRuntimePid: primaryRuntime.metadata?.pid ?? null,
     risk: riskSnapshot,
     reputationContext,
     readiness: readinessSnapshot,
@@ -432,8 +437,21 @@ app.get("/api/price", (_req, res) => {
 });
 
 app.get("/api/traces", (_req, res) => {
-  const all = filterRowsByAgentId(readJsonLines<Record<string, unknown>>(PLANNER_TRACES_FILE), expectedAgentId);
-  res.json(all.slice(-50).reverse());
+  // Read traces from both agent 5 and agent 53 files for multi-agent dashboard
+  const traceFiles = [
+    PLANNER_TRACES_FILE,
+    path.join(process.cwd(), "planner-traces-5.jsonl"),
+    path.join(process.cwd(), "planner-traces-53.jsonl"),
+  ];
+  const all: Record<string, unknown>[] = [];
+  for (const tf of traceFiles) {
+    if (fs.existsSync(tf)) {
+      all.push(...readJsonLines<Record<string, unknown>>(tf));
+    }
+  }
+  // Sort by timestamp descending, take last 50
+  all.sort((a, b) => ((b.timestamp as number) ?? 0) - ((a.timestamp as number) ?? 0));
+  res.json(all.slice(0, 50));
 });
 
 app.get("/api/metrics", async (_req, res) => {
@@ -449,6 +467,7 @@ app.get("/api/metrics", async (_req, res) => {
       agentId: metricsAgentId,
       recentLimit: 8,
     });
+
     res.json(payload);
   } catch (error) {
     res.status(500).json({

@@ -199,6 +199,21 @@
   }
 }
 
+@keyframes toast-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(24px) translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+  }
+}
+
+.animate-toast-slide-in {
+  animation: toast-slide-in 220ms ease-out;
+}
+
 .pulse-live {
   animation: pulse-live 2s ease-in-out infinite;
 }

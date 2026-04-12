@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { ChevronDown, ChevronRight, Terminal } from 'lucide-react';
+import { EtherscanLink } from './etherscan-link';
 import type { DashboardCheckpoint } from '@/lib/trading-types';
 
 interface CheckpointFeedProps {
@@ -12,9 +13,9 @@ export function CheckpointFeed({ checkpoints }: CheckpointFeedProps) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [filter, setFilter] = useState<'ALL' | 'BUY' | 'SELL' | 'HOLD'>('ALL');
 
-  const filteredCheckpoints = checkpoints.filter(
-    cp => filter === 'ALL' || cp.action === filter
-  );
+  const filteredCheckpoints = checkpoints
+    .filter(cp => filter === 'ALL' || cp.action === filter)
+    .slice(0, 5);
 
   const formatTime = (timestamp: number) => {
     return new Date(timestamp).toLocaleTimeString('en-US', { 
@@ -136,7 +137,10 @@ export function CheckpointFeed({ checkpoints }: CheckpointFeedProps) {
                     </div>
                     <div className="flex items-center gap-4 text-xs text-muted-foreground font-mono">
                       <span>Model: {cp.model ?? 'N/A'}</span>
-                      <span>Hash: {cp.intentHash.slice(0, 10)}...</span>
+                      <span>Hash: <EtherscanLink hash={cp.intentHash} /></span>
+                      {cp.checkpointHash && (
+                        <span>Checkpoint: <EtherscanLink hash={cp.checkpointHash} /></span>
+                      )}
                     </div>
                   </div>
                 )}

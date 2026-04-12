@@ -50,6 +50,15 @@ export interface DecisionContext {
   executionIntent?: string;
   cppiScale?: number;
   breakerState?: string;
+  regimeSizingStatus?: string;
+  regimeSizingMultiplier?: number;
+  regimeSizingReason?: string;
+  dailyBudgetStatus?: string;
+  dailyBudgetLimitUsd?: number;
+  dailyBudgetRemainingUsd?: number;
+  dailyBudgetUtilizationPct?: number;
+  dailyBudgetMultiplier?: number;
+  dailyBudgetReason?: string;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

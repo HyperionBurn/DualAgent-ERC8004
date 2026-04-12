@@ -10,7 +10,7 @@ const nextConfig = {
   // The agent's Express server runs on the AGENT_API_URL (default http://localhost:3001).
   // This avoids CORS issues and makes the dashboard work in production too.
   async rewrites() {
-    const agentApiUrl = process.env.AGENT_API_URL || 'http://localhost:3001';
+    const agentApiUrl = process.env.AGENT_API_URL || 'http://localhost:3000';
     return [
       {
         source: '/api/:path*',

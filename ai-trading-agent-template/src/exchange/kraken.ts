@@ -60,8 +60,17 @@ function parseCommandArgs(value: string): string[] {
 // Example:
 //   KRAKEN_CLI_PATH=C:\\Windows\\System32\\wsl.exe
 //   KRAKEN_CLI_ARGS=-d Ubuntu -- kraken
-const KRAKEN_BIN = process.env.KRAKEN_CLI_PATH || "kraken";
-const KRAKEN_BIN_ARGS = parseCommandArgs(process.env.KRAKEN_CLI_ARGS || "");
+//
+// NOTE: These are resolved lazily via getters because dotenv.config() runs
+// after module-level imports are hoisted, so process.env may not be populated
+// at module evaluation time.
+function getKrakenBin(): string {
+  return process.env.KRAKEN_CLI_PATH || "kraken";
+}
+
+function getKrakenBinArgs(): string[] {
+  return parseCommandArgs(process.env.KRAKEN_CLI_ARGS || "");
+}
 
 export class KrakenClient {
   private readonly sandbox: boolean;
@@ -96,7 +105,9 @@ export class KrakenClient {
    * All output is JSON by default when --json flag is passed.
    */
   private async run(subcommand: string[], isPrivate = false): Promise<unknown> {
-    const args: string[] = [...KRAKEN_BIN_ARGS];
+    const krakenBin = getKrakenBin();
+    const krakenBinArgs = getKrakenBinArgs();
+    const args: string[] = [...krakenBinArgs];
 
     if (isPrivate && !this.sandbox) {
       args.push("--api-key", this.apiKey, "--api-secret", this.apiSecret);
@@ -106,7 +117,7 @@ export class KrakenClient {
     args.push("-o", "json");
 
     try {
-      const { stdout } = await execFileAsync(KRAKEN_BIN, args, { timeout: KRAKEN_CLI_TIMEOUT_MS });
+      const { stdout } = await execFileAsync(krakenBin, args, { timeout: KRAKEN_CLI_TIMEOUT_MS });
       return JSON.parse(stdout.trim());
     } catch (err: unknown) {
       const failure = err as ExecFailure;
@@ -114,14 +125,14 @@ export class KrakenClient {
       // If CLI binary not found, surface a helpful error
       if (failure.code === "ENOENT") {
         throw new Error(
-          `[kraken] Kraken CLI binary not found at "${KRAKEN_BIN}".\n` +
+          `[kraken] Kraken CLI binary not found at "${krakenBin}".\n` +
           `Install it from https://github.com/kraken-oss/kraken-cli or set KRAKEN_CLI_PATH`
         );
       }
 
       if (failure.killed && failure.signal === "SIGTERM") {
         throw new Error(
-          `[kraken] CLI command timed out after ${KRAKEN_CLI_TIMEOUT_MS}ms: ${KRAKEN_BIN} ${args.join(" ")}`
+          `[kraken] CLI command timed out after ${KRAKEN_CLI_TIMEOUT_MS}ms: ${krakenBin} ${args.join(" ")}`
         );
       }
 
