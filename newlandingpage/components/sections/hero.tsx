@@ -165,7 +165,7 @@ const trustIndicators = [
   {
     icon: FileSignature,
     label: "EIP-712 Signed",
-    value: "78.78",
+    value: "95.80",
     suffix: "Score",
     color: "text-chart-4",
     bgColor: "bg-chart-4/10",
@@ -193,7 +193,7 @@ export function Hero() {
 
   const checkpointCounter = useAnimatedCounter(60, 2000, 0)
   const tradeCounter = useAnimatedCounter(15, 2000, 0)
-  const scoreCounter = useAnimatedCounter(78.78, 2000, 2)
+  const scoreCounter = useAnimatedCounter(95.8, 2000, 2)
 
   useEffect(() => {
     const timer = setTimeout(() => {
