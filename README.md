@@ -25,15 +25,27 @@
 
 > Built for the **AI Trading Agents Hackathon** — a dual-agent system on Ethereum Sepolia demonstrating ERC-8004 identity, EIP-712 signed checkpoints, on-chain risk enforcement, and a production-grade LLM trading planner.
 
+**Leaderboard update:** Agent 53 is currently at the top of the leaderboard with a **95.80 composite score**.
+
 | Metric | Agent 5 | Agent 53 |
 |:---|:---:|:---:|
-| **Validation Score** | 99 | 92.23 |
-| **Reputation Score** | 93 | 90 |
+| **Validation Score** | 99 | 100 |
+| **Reputation Score** | 93 | 99 |
+| **Composite Score** | 78.78 | 95.80 |
 | **Approved Trades** | 15 | 15 |
-| **Max Drawdown** | 2 bps | 0 bps |
+| **Max Drawdown** | 2 bps | 2 bps |
 | **Checkpoints** | 60 | 53 |
+| **Net PnL** | +$0.47 | +$25.00 |
 | **Vault Claimed** | ✅ | ✅ |
 | **Phase 2 Evidence** | ✅ 12/12 | ✅ 12/12 |
+
+### Adaptive Risk Layer (Daily Budget + Regime Sizing)
+
+- **Regime-aware sizing** scales each non-HOLD order before execution using market regime, confidence, trend strength, spread, VWAP premium, and realized volatility.
+- Sizing multipliers are bounded (`0.35` to `1.35`) and tagged as `expanded`, `held`, or `reduced` for explainability.
+- **Daily risk budget** continuously tracks realized daily loss vs configured max daily loss and returns `healthy`, `throttled`, or `blocked` policy states.
+- Budget throttling starts at **55% utilization** and blends CPPI scale plus volatility pressure into a dynamic size multiplier.
+- Budget policy blocks trades when the circuit breaker is active or daily loss budget is exhausted, forcing explicit HOLD behavior.
 
 ---
 

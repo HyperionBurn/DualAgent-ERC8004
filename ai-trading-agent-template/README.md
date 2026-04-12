@@ -31,6 +31,8 @@ FluxAgent isn't just another trading bot. It's a **verifiable decision engine** 
 | 🔐 **ERC-8004 Identity** | On-chain agent passport via ERC-721 NFT — operator, model hash, and deployment timestamp are immutable |
 | ✍️ **EIP-712 Checkpoints** | Every decision is typed-data signed with the agent's key — reasoning, confidence, edge, and market state are all committed |
 | 🛡️ **On-Chain Risk Gates** | `RiskRouter.sol` enforces drawdown limits, position caps, and hourly trade limits — the LLM *proposes*, the chain *disposes* |
+| 🎚️ **Regime-Aware Sizing** | Position size is adjusted per tick from regime label/confidence, trend strength, spread, VWAP premium, and realized volatility (bounded multiplier `0.35` to `1.35`) |
+| 🧾 **Daily Risk Budget** | Runtime budget policy tracks daily loss utilization and shifts between `healthy`, `throttled`, and `blocked`, forcing HOLD when budget or breaker constraints are hit |
 | 🧠 **2-Pass LLM Critique** | Groq-accelerated planner generates a plan, then self-critiques it before execution — catching hallucinated trades |
 | ⭐ **Reputation Loop** | Cross-protocol peer review accumulates portable trust scores via `ReputationRegistry.sol` |
 | 📊 **Composite Score Engine** | 4-factor score: risk-adjusted profitability + drawdown control + validation quality + reputation |
@@ -132,17 +134,28 @@ sequenceDiagram
 
 Dual-agent deployment on Sepolia testnet — both agents passing all 12 phase-2 readiness checks:
 
+**Leaderboard update:** Agent 53 is currently at the top with a **95.80 composite score**.
+
 | Metric | 🟢 Agent 5 | 🔵 Agent 53 |
 |:---|:---:|:---:|
-| **Validation Score** | `99.00` | `92.23` |
-| **Reputation Score** | `93.00` | `90.00` |
-| **Composite Score** | `78.78` | `76.98` |
+| **Validation Score** | `99.00` | `100.00` |
+| **Reputation Score** | `93.00` | `99.00` |
+| **Composite Score** | `78.78` | `95.80` |
 | **Approved Trades** | 15 | 15 |
 | **Checkpoints** | 60 | 53 |
-| **Max Drawdown** | 2 bps | 0 bps |
-| **Net PnL** | +$0.47 | +$0.44 |
+| **Max Drawdown** | 2 bps | 2 bps |
+| **Net PnL** | +$0.47 | +$25.00 |
+| **Current Equity** | $10,000.47 | $10,025.00 |
 | **Vault Claimed** | ✅ | ✅ |
 | **Phase 2 Checks** | 12/12 ✅ | 12/12 ✅ |
+
+### Adaptive Risk Controls (New)
+
+- **Regime-aware sizing pipeline:** every actionable decision is passed through a sizing policy driven by regime label, regime confidence, trend strength, spread, VWAP premium, and realized volatility.
+- **Sizing outcomes:** policy outputs `expanded`, `held`, or `reduced`, then scales order notional while respecting planner caps and preserving explainability in decision context.
+- **Daily risk budget policy:** runtime loss utilization is measured against `BREAKER_MAX_DAILY_LOSS_USD` and returns `healthy`, `throttled`, or `blocked`.
+- **Throttle behavior:** throttling begins at **55% budget utilization**, with multiplier adjustments blended from CPPI scale and volatility throttle state.
+- **Hard stops:** breaker-active or exhausted-budget states force HOLD and annotate the reason in checkpoints/evidence.
 
 ---
 
