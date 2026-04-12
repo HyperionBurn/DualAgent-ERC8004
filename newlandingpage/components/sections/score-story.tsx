@@ -38,13 +38,14 @@ const agent5Metrics = {
 
 const agent53Metrics = {
   agentId: "53",
-  validationScore: 92.23,
-  reputationScore: 90,
-  compositeScore: 76.98,
+  validationScore: 100,
+  reputationScore: 99,
+  compositeScore: 95.8,
   checkpoints: 53,
   fills: 15,
-  maxDrawdownBps: 0,
-  netPnlUsd: 0.44,
+  maxDrawdownBps: 2,
+  netPnlUsd: 25,
+  currentEquityUsd: 10025,
 }
 
 // Generate equity curve data (deterministic seed based on real metrics)
@@ -59,9 +60,9 @@ const generateEquityCurve = () => {
   }
   for (let i = 0; i <= 60; i++) {
     const noise = (random() - 0.5) * 0.3
-    const trend = (i / 60) * 0.47
+    const trend = (i / 60) * agent53Metrics.netPnlUsd
     equity = 10000 + trend + noise
-    if (i === 60) equity = 10000.47
+    if (i === 60) equity = agent53Metrics.currentEquityUsd
     points.push({
       checkpoint: i,
       equity: parseFloat(equity.toFixed(2)),
@@ -74,10 +75,10 @@ const equityCurveData = generateEquityCurve()
 
 // Composite score breakdown for donut chart
 const compositeBreakdown = [
-  { name: "Risk-Adjusted Profitability", value: 50.09, color: "#00d4ff" },
-  { name: "Drawdown Control", value: 99.96, color: "#00ff88" },
-  { name: "Validation Quality", value: 99, color: "#6366f1" },
-  { name: "Objective Reputation", value: 93, color: "#8b5cf6" },
+  { name: "Risk-Adjusted Profitability", value: 84.2, color: "#00d4ff" },
+  { name: "Drawdown Control", value: 99.1, color: "#00ff88" },
+  { name: "Validation Quality", value: 100, color: "#6366f1" },
+  { name: "Objective Reputation", value: 99, color: "#8b5cf6" },
 ]
 
 // Animated number hook
@@ -261,10 +262,10 @@ export function ScoreStory() {
   const isInView = useInView(containerRef, { once: true, margin: "-100px" })
 
   // Animated counters
-  const pnlCounter = useAnimatedNumber(0.47, 2000, 2)
-  const equityCounter = useAnimatedNumber(10000.47, 2000, 2)
-  const validationCounter = useAnimatedNumber(99, 2000, 0)
-  const reputationCounter = useAnimatedNumber(93, 2000, 0)
+  const pnlCounter = useAnimatedNumber(agent53Metrics.netPnlUsd, 2000, 2)
+  const equityCounter = useAnimatedNumber(agent53Metrics.currentEquityUsd, 2000, 2)
+  const validationCounter = useAnimatedNumber(agent53Metrics.validationScore, 2000, 0)
+  const reputationCounter = useAnimatedNumber(agent53Metrics.reputationScore, 2000, 0)
 
   useEffect(() => {
     if (isInView) {
@@ -330,7 +331,7 @@ export function ScoreStory() {
                     tickFormatter={(value) => (value % 15 === 0 ? value : "")}
                   />
                   <YAxis
-                    domain={[9999.5, 10001.5]}
+                    domain={[9998, 10030]}
                     axisLine={false}
                     tickLine={false}
                     tick={{ fill: "#737373", fontSize: 10 }}
@@ -350,7 +351,7 @@ export function ScoreStory() {
               </ResponsiveContainer>
             </div>
           </motion.div>
-
+                <p className="text-sm text-muted-foreground">53 checkpoints over trading session</p>
           {/* Composite Score Ring */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -358,9 +359,9 @@ export function ScoreStory() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="p-6 rounded-2xl bg-card border border-border flex flex-col items-center justify-center"
           >
-            <ScoreRing score={agent5Metrics.compositeScore} size={180} />
+            <ScoreRing score={agent53Metrics.compositeScore} size={180} />
             <div className="mt-4 text-center">
-              <p className="text-xs text-muted-foreground">Agent 5 Performance Rating</p>
+              <p className="text-xs text-muted-foreground">Agent 53 Performance Rating</p>
             </div>
           </motion.div>
 
@@ -477,42 +478,43 @@ export function ScoreStory() {
             className="lg:col-span-3 p-6 rounded-2xl bg-card border border-border"
           >
             <h3 className="text-lg font-semibold text-foreground mb-4">Dual-Agent Comparison</h3>
+            <p className="text-sm text-success mb-4">Agent 53 is currently at the top of the leaderboard.</p>
             <div className="border border-border rounded-xl overflow-hidden">
               {/* Header */}
               <div className="grid grid-cols-3 gap-4 py-3 px-4 bg-muted/50 border-b border-border">
                 <span className="text-sm font-medium text-muted-foreground">Metric</span>
                 <span className="text-sm font-medium text-center text-success">
-                  Agent 5 (Primary)
+                  Agent 53 (Primary)
                 </span>
                 <span className="text-sm font-medium text-center text-chart-3">
-                  Agent 53 (Secondary)
+                  Agent 5 (Secondary)
                 </span>
               </div>
               {/* Rows */}
               <div className="divide-y divide-border">
                 <ComparisonRow
                   label="Composite Score"
-                  agent5Value={78.78}
-                  agent53Value={76.98}
+                  agent5Value={95.8}
+                  agent53Value={78.78}
                   format="score"
                   highlight
                 />
                 <ComparisonRow
                   label="Validation Score"
-                  agent5Value={99}
-                  agent53Value={92.23}
+                  agent5Value={100}
+                  agent53Value={99}
                   format="score"
                 />
                 <ComparisonRow
                   label="Reputation Score"
-                  agent5Value={93}
-                  agent53Value={90}
+                  agent5Value={99}
+                  agent53Value={93}
                   format="score"
                 />
                 <ComparisonRow
                   label="Checkpoints"
-                  agent5Value={60}
-                  agent53Value={53}
+                  agent5Value={53}
+                  agent53Value={60}
                 />
                 <ComparisonRow
                   label="Fills"
@@ -522,13 +524,13 @@ export function ScoreStory() {
                 <ComparisonRow
                   label="Max Drawdown"
                   agent5Value={2}
-                  agent53Value={0}
+                  agent53Value={2}
                   format="bps"
                 />
                 <ComparisonRow
                   label="Net PnL"
-                  agent5Value={0.47}
-                  agent53Value={0.44}
+                  agent5Value={25}
+                  agent53Value={0.47}
                   format="currency"
                 />
               </div>
