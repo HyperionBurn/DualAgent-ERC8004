@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Activity, Settings, Clock, Zap } from 'lucide-react';
+import { Activity, Clock, Zap, Bell } from 'lucide-react';
 import type { ConnectionStatus } from '@/lib/trading-types';
 
 interface TopBarProps {
@@ -9,9 +9,24 @@ interface TopBarProps {
   connectionStatus: ConnectionStatus;
   latency?: number;
   isDemo?: boolean;
+  unreadNotificationCount?: number;
+  onBellClick?: () => void;
+  uptime?: string;
+  checkpointCount?: number;
+  tradeCount?: number;
 }
 
-export function TopBar({ agentId, connectionStatus, latency, isDemo }: TopBarProps) {
+export function TopBar({
+  agentId,
+  connectionStatus,
+  latency,
+  isDemo,
+  unreadNotificationCount = 0,
+  onBellClick,
+  uptime,
+  checkpointCount,
+  tradeCount,
+}: TopBarProps) {
   const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
@@ -79,17 +94,36 @@ export function TopBar({ agentId, connectionStatus, latency, isDemo }: TopBarPro
         )}
       </div>
 
-      {/* Right: Time & Settings */}
+      {/* Right: Bell + Live Badge + Time */}
       <div className="flex items-center gap-4">
+        <button
+          onClick={onBellClick}
+          className="relative p-1.5 text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-secondary/50"
+          title="Trade notifications"
+        >
+          <Bell className="w-4 h-4" />
+          {unreadNotificationCount > 0 && (
+            <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full bg-primary text-[10px] leading-4 text-primary-foreground text-center font-mono font-semibold animate-pulse">
+              {unreadNotificationCount}
+            </span>
+          )}
+        </button>
+        {connectionStatus === 'connected' && uptime && checkpointCount !== undefined && tradeCount !== undefined && (
+          <div className="hidden xl:flex items-center gap-2 px-2.5 py-1 rounded-full border border-success/30 bg-success/10 text-success text-xs font-mono whitespace-nowrap">
+            <span className="w-2 h-2 rounded-full bg-success pulse-live" />
+            <span>Live {uptime}</span>
+            <span className="text-success/60">·</span>
+            <span>{checkpointCount} ticks</span>
+            <span className="text-success/60">·</span>
+            <span>{tradeCount} trades</span>
+          </div>
+        )}
         <div className="flex items-center gap-2 text-muted-foreground">
           <Clock className="w-4 h-4" />
           <time className="font-mono text-sm tabular-nums">
             {currentTime.toLocaleTimeString('en-US', { hour12: false })}
           </time>
         </div>
-        <button className="p-2 hover:bg-secondary/50 rounded-lg transition-colors">
-          <Settings className="w-4 h-4 text-muted-foreground" />
-        </button>
       </div>
     </header>
   );

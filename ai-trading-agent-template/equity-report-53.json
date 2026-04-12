@@ -1,36 +1,36 @@
 {
-  "generatedAt": "2026-04-11T19:27:26.359Z",
+  "generatedAt": "2026-04-12T15:31:26.747Z",
   "reason": "post-fill",
-  "agentId": "5",
+  "agentId": "53",
   "pair": "XBTUSD",
   "baselineCapitalUsd": 10000,
   "files": {
-    "checkpointsFile": "checkpoints-5.jsonl",
-    "fillsFile": "fills-5.jsonl"
+    "checkpointsFile": "checkpoints-53.jsonl",
+    "fillsFile": "fills-53.jsonl"
   },
   "performance": {
-    "netPnlUsd": 11.79,
-    "realizedPnlUsd": 0,
-    "unrealizedPnlUsd": 11.79,
-    "openPositionBase": 0.01966508
+    "netPnlUsd": -21.31,
+    "realizedPnlUsd": -21.31,
+    "unrealizedPnlUsd": 0,
+    "openPositionBase": 0
   },
   "drawdownEvidence": {
     "source": "local-derived",
-    "asOfTimestamp": 1775935646,
-    "asOfIso": "2026-04-11T19:27:26.359Z",
-    "lastPriceUsd": 73595.58,
-    "peakEquityUsd": 10013.62,
-    "currentEquityUsd": 10011.79,
-    "maxDrawdownBps": 3,
-    "currentDrawdownBps": 2
+    "asOfTimestamp": 1776007886,
+    "asOfIso": "2026-04-12T15:31:26.747Z",
+    "lastPriceUsd": 70719.5,
+    "peakEquityUsd": 10005.39,
+    "currentEquityUsd": 9978.69,
+    "maxDrawdownBps": 27,
+    "currentDrawdownBps": 27
   },
   "cppi": {
     "floorRatio": 0.95,
     "multiplier": 1,
-    "floorEquityUsd": 9512.94,
-    "cushionUsd": 498.85,
-    "cushionRatio": 0.9963,
-    "scale": 0.9963
+    "floorEquityUsd": 9505.12,
+    "cushionUsd": 473.57,
+    "cushionRatio": 0.9466,
+    "scale": 0.9466
   },
   "guardrails": {
     "source": "shared-router-riskParams",
@@ -41,8 +41,8 @@
     "defaultCapUsd": 1000
   },
   "tradeRecord": {
-    "count": "2",
-    "windowStart": "1775935584"
+    "count": "29",
+    "windowStart": "1776004896"
   },
   "router": {
     "address": "0xd6A6952545FF6E6E6681c2d15C59f9EB8F40FdBC",
@@ -55,8 +55,13 @@
     "breakerReason": null,
     "consecutiveLosses": 0,
     "dailyLossUsd": 0,
+    "dailyBudgetStatus": "healthy",
+    "dailyBudgetRemainingUsd": 10,
+    "dailyBudgetLimitUsd": 10,
+    "dailyBudgetUtilizationPct": 0,
+    "dailyBudgetMultiplier": 1,
     "volatilityThrottleActive": false,
-    "volatilityPct": 0.7398,
+    "volatilityPct": 0.4247,
     "appliedTradeScale": 1
   }
 }

@@ -17,7 +17,7 @@
  */
 
 import * as dotenv from "dotenv";
-dotenv.config();
+dotenv.config({ path: process.env.DOTENV_CONFIG_PATH || undefined });
 
 import { ethers } from "ethers";
 import * as fs from "fs";
@@ -38,9 +38,11 @@ import { FeedbackType, ReputationRegistryClient } from "../onchain/reputationReg
 import { formatExplanation, formatCheckpointLog } from "../explainability/reasoner";
 import { generateCheckpoint } from "../explainability/checkpoint";
 import { buildArtifactIdentityReport } from "../submission/artifacts";
+import { sendTelegramAlert } from "../telegram";
 import { buildEquityReportPayload } from "../submission/equity";
 import { isReputationLoopEnabled, isSubmissionStrict } from "../runtime/profile";
 import { applyAdaptiveRuntimeHints, buildAdaptiveRuntimePolicy } from "./adaptive-policy";
+import { createDailyBudgetDecisionContext, evaluateDailyRiskBudget, formatDailyRiskBudgetSummary, type DailyRiskBudgetPolicy } from "./daily-risk-budget";
 import { buildIndicatorSnapshot } from "../tools/indicators";
 import { computeValidationAttestationScore } from "./validation-score";
 import { KrakenOrder, KrakenOrderResult, MarketData, TradeFill } from "../types/index";
@@ -181,6 +183,12 @@ interface RuntimeRiskControlState {
   volatilityPct: number | null;
   appliedTradeScale: number;
   lastNetPnlUsd: number | null;
+  dailyBudgetStatus: DailyRiskBudgetPolicy["status"];
+  dailyBudgetLimitUsd: number;
+  dailyBudgetRemainingUsd: number;
+  dailyBudgetUtilizationPct: number;
+  dailyBudgetMultiplier: number;
+  dailyBudgetReason: string;
 }
 
 interface ReputationRater {
@@ -287,6 +295,12 @@ export async function runAgent(strategy: TradingStrategy) {
     volatilityPct: null,
     appliedTradeScale: 1,
     lastNetPnlUsd: null,
+    dailyBudgetStatus: "blocked",
+    dailyBudgetLimitUsd: breakerMaxDailyLossUsd,
+    dailyBudgetRemainingUsd: 0,
+    dailyBudgetUtilizationPct: 1,
+    dailyBudgetMultiplier: 0,
+    dailyBudgetReason: "daily budget uninitialized",
   };
 
   const reputationRaters: ReputationRater[] = [];
@@ -376,6 +390,27 @@ export async function runAgent(strategy: TradingStrategy) {
     process.env.INDICATOR_MIN_TRADE_INTERVAL_MS = String(INDICATOR_MIN_TRADE_INTERVAL_MS);
     process.env.DUAL_GATE_PROBE_USD = DUAL_GATE_PROBE_USD.toFixed(2);
     process.env.DUAL_GATE_PROBE_MIN_CONFIDENCE = DUAL_GATE_PROBE_MIN_CONFIDENCE.toFixed(4);
+
+    process.env.PLANNER_RUNTIME_DAILY_BUDGET_STATUS = riskControlState.dailyBudgetStatus;
+    process.env.PLANNER_RUNTIME_DAILY_BUDGET_REMAINING_USD = riskControlState.dailyBudgetRemainingUsd.toFixed(2);
+    process.env.PLANNER_RUNTIME_DAILY_BUDGET_LIMIT_USD = riskControlState.dailyBudgetLimitUsd.toFixed(2);
+    process.env.PLANNER_RUNTIME_DAILY_BUDGET_UTILIZATION_PCT = riskControlState.dailyBudgetUtilizationPct.toFixed(4);
+    process.env.PLANNER_RUNTIME_DAILY_BUDGET_MULTIPLIER = riskControlState.dailyBudgetMultiplier.toFixed(4);
+    process.env.PLANNER_RUNTIME_DAILY_BUDGET_REASON = riskControlState.dailyBudgetReason;
+
+    const adaptiveSummary = (process.env.ADAPTIVE_POLICY_SUMMARY || "").trim();
+    const budgetSummary = formatDailyRiskBudgetSummary({
+      status: riskControlState.dailyBudgetStatus,
+      multiplier: riskControlState.dailyBudgetMultiplier,
+      remainingBudgetUsd: riskControlState.dailyBudgetRemainingUsd,
+      utilizationPct: riskControlState.dailyBudgetUtilizationPct,
+      reason: riskControlState.dailyBudgetReason,
+    });
+    if (adaptiveSummary.length === 0) {
+      process.env.ADAPTIVE_POLICY_SUMMARY = budgetSummary;
+    } else if (!adaptiveSummary.includes("dailyBudget=")) {
+      process.env.ADAPTIVE_POLICY_SUMMARY = `${adaptiveSummary} || ${budgetSummary}`;
+    }
   };
 
   const refreshAdaptivePolicy = async (): Promise<Awaited<ReturnType<typeof buildAdaptiveRuntimePolicy>>> => {
@@ -487,6 +522,23 @@ export async function runAgent(strategy: TradingStrategy) {
       }
     }
 
+    const budgetPolicy = evaluateDailyRiskBudget({
+      maxDailyLossUsd: riskControlState.dailyBudgetLimitUsd,
+      dailyLossUsd: riskControlState.dailyLossUsd,
+      breakerActive: riskControlState.breakerActive,
+      breakerReason: riskControlState.breakerReason,
+      consecutiveLosses: riskControlState.consecutiveLosses,
+      cppiScale: riskControlState.cppiScale,
+      volatilityThrottleActive: riskControlState.volatilityThrottleActive,
+      volatilityPct: riskControlState.volatilityPct,
+    });
+
+    riskControlState.dailyBudgetStatus = budgetPolicy.status;
+    riskControlState.dailyBudgetRemainingUsd = budgetPolicy.remainingBudgetUsd;
+    riskControlState.dailyBudgetUtilizationPct = budgetPolicy.utilizationPct;
+    riskControlState.dailyBudgetMultiplier = budgetPolicy.multiplier;
+    riskControlState.dailyBudgetReason = budgetPolicy.reason;
+
     syncPlannerRuntimeHints();
   };
 
@@ -553,6 +605,11 @@ export async function runAgent(strategy: TradingStrategy) {
           breakerReason: riskControlState.breakerReason,
           consecutiveLosses: riskControlState.consecutiveLosses,
           dailyLossUsd: round2(riskControlState.dailyLossUsd),
+          dailyBudgetStatus: riskControlState.dailyBudgetStatus,
+          dailyBudgetRemainingUsd: round2(riskControlState.dailyBudgetRemainingUsd),
+          dailyBudgetLimitUsd: round2(riskControlState.dailyBudgetLimitUsd),
+          dailyBudgetUtilizationPct: round2(riskControlState.dailyBudgetUtilizationPct * 100),
+          dailyBudgetMultiplier: round2(riskControlState.dailyBudgetMultiplier),
           volatilityThrottleActive: riskControlState.volatilityThrottleActive,
           volatilityPct: riskControlState.volatilityPct,
           appliedTradeScale: Number(riskControlState.appliedTradeScale.toFixed(4)),
@@ -589,6 +646,7 @@ export async function runAgent(strategy: TradingStrategy) {
       refreshRiskStateFromEquity(equitySnapshot, indicatorSnapshot.realizedVolPct);
 
       const adaptivePolicy = await refreshAdaptivePolicy();
+      syncPlannerRuntimeHints();
       const freshScoreWindowMessage = adaptivePolicy.freshScoreWindowRecommended
         ? `[agent] Fresh score window recommended: ${adaptivePolicy.freshScoreWindowReason}`
         : `[agent] Score window stable: ${adaptivePolicy.freshScoreWindowReason}`;
@@ -600,6 +658,9 @@ export async function runAgent(strategy: TradingStrategy) {
       // 2. Strategy decision
       let decision = await strategy.analyze(market);
       decision = withDecisionContext(decision, indicatorSnapshot, adaptivePolicy.edgeFloorBps);
+      syncPlannerRuntimeHints();
+
+      const initialDecisionAmount = decision.amount;
 
       if (decision.action !== "HOLD" && decision.amount > 0) {
         const dualGate = applyDualGatePolicy({
@@ -619,6 +680,40 @@ export async function runAgent(strategy: TradingStrategy) {
             dualGateStatus: `${dualGate.status} (${dualGate.reason})`,
           },
         };
+      }
+
+      const regimeSizingModule = await import("./regime-sizing");
+      const regimeSizingPolicy = regimeSizingModule.evaluateRegimeAwareSizing({
+        indicatorSnapshot,
+        currentAmountUsd: decision.amount,
+      });
+      process.env.REGIME_SIZING_SUMMARY = regimeSizingModule.formatRegimeSizingSummary(regimeSizingPolicy);
+      decision.decisionContext = regimeSizingModule.createRegimeSizingDecisionContext(decision.decisionContext, regimeSizingPolicy);
+
+      if (decision.action !== "HOLD" && decision.amount > 0) {
+        const maxTradeUsd = parsePositiveNumberEnv("PLANNER_MAX_TRADE_USD", Math.max(decision.amount, 1));
+        const sizedAmount = round2(Math.min(decision.amount * regimeSizingPolicy.multiplier, maxTradeUsd));
+        if (sizedAmount <= 0) {
+          decision.action = "HOLD";
+          decision.amount = 0;
+          decision.reasoning += ` [REGIME-SIZE blocked: ${regimeSizingPolicy.reason}]`;
+          decision.decisionContext = {
+            ...decision.decisionContext,
+            riskGateStatus: "regime-size-block",
+            executionIntent: "hold-regime-size",
+          };
+        } else if (Math.abs(sizedAmount - decision.amount) >= 0.01) {
+          decision.amount = sizedAmount;
+          const regimeReason = regimeSizingPolicy.status === "expanded"
+            ? `expanded to ${sizedAmount.toFixed(2)}USD`
+            : `reduced to ${sizedAmount.toFixed(2)}USD`;
+          decision.reasoning += ` [REGIME-SIZE ${regimeReason}: ${regimeSizingPolicy.reason}]`;
+          decision.decisionContext = {
+            ...decision.decisionContext,
+            riskGateStatus: regimeSizingPolicy.status === "expanded" ? "regime-size-expand" : "regime-size-reduce",
+            executionIntent: regimeSizingPolicy.status === "expanded" ? "regime-expanded" : "regime-reduced",
+          };
+        }
       }
 
       if (decision.action !== "HOLD" && decision.amount > 0 && riskControlState.volatilityThrottleActive) {
@@ -649,15 +744,72 @@ export async function runAgent(strategy: TradingStrategy) {
         };
       }
 
-      riskControlState.appliedTradeScale = decision.action === "HOLD"
-        ? 0
-        : Math.max(0, Math.min(1, decision.amount / Math.max(parsePositiveNumberEnv("PLANNER_MAX_TRADE_USD", decision.amount), 1)));
+      const dailyBudgetPolicy = evaluateDailyRiskBudget({
+        maxDailyLossUsd: riskControlState.dailyBudgetLimitUsd,
+        dailyLossUsd: riskControlState.dailyLossUsd,
+        breakerActive: riskControlState.breakerActive,
+        breakerReason: riskControlState.breakerReason,
+        consecutiveLosses: riskControlState.consecutiveLosses,
+        cppiScale: riskControlState.cppiScale,
+        volatilityThrottleActive: riskControlState.volatilityThrottleActive,
+        volatilityPct: riskControlState.volatilityPct,
+      });
+
+      riskControlState.dailyBudgetStatus = dailyBudgetPolicy.status;
+      riskControlState.dailyBudgetRemainingUsd = dailyBudgetPolicy.remainingBudgetUsd;
+      riskControlState.dailyBudgetUtilizationPct = dailyBudgetPolicy.utilizationPct;
+      riskControlState.dailyBudgetMultiplier = dailyBudgetPolicy.multiplier;
+      riskControlState.dailyBudgetReason = dailyBudgetPolicy.reason;
+
+      if (decision.action !== "HOLD" && decision.amount > 0) {
+        if (dailyBudgetPolicy.status === "blocked") {
+          decision.action = "HOLD";
+          decision.amount = 0;
+          decision.reasoning += ` [DAILY-BUDGET blocked: ${dailyBudgetPolicy.reason}]`;
+          decision.decisionContext = createDailyBudgetDecisionContext(decision.decisionContext, dailyBudgetPolicy, riskControlState.dailyBudgetLimitUsd);
+          decision.decisionContext = {
+            ...decision.decisionContext,
+            riskGateStatus: "daily-budget-block",
+            executionIntent: "hold-daily-budget",
+          };
+        } else if (dailyBudgetPolicy.status === "throttled") {
+          const budgetScaledAmount = round2(decision.amount * dailyBudgetPolicy.multiplier);
+          if (budgetScaledAmount <= 0) {
+            decision.action = "HOLD";
+            decision.amount = 0;
+            decision.reasoning += ` [DAILY-BUDGET blocked: ${dailyBudgetPolicy.reason}]`;
+            decision.decisionContext = createDailyBudgetDecisionContext(decision.decisionContext, dailyBudgetPolicy, riskControlState.dailyBudgetLimitUsd);
+            decision.decisionContext = {
+              ...decision.decisionContext,
+              riskGateStatus: "daily-budget-block",
+              executionIntent: "hold-daily-budget",
+            };
+          } else if (budgetScaledAmount < decision.amount) {
+            decision.amount = budgetScaledAmount;
+            decision.reasoning += ` [DAILY-BUDGET size ${budgetScaledAmount.toFixed(2)}USD, remaining $${dailyBudgetPolicy.remainingBudgetUsd.toFixed(2)}]`;
+            decision.decisionContext = createDailyBudgetDecisionContext(decision.decisionContext, dailyBudgetPolicy, riskControlState.dailyBudgetLimitUsd);
+            decision.decisionContext = {
+              ...decision.decisionContext,
+              riskGateStatus: "daily-budget-throttle",
+              executionIntent: "budget-throttled",
+            };
+          } else {
+            decision.decisionContext = createDailyBudgetDecisionContext(decision.decisionContext, dailyBudgetPolicy, riskControlState.dailyBudgetLimitUsd);
+          }
+        } else {
+          decision.decisionContext = createDailyBudgetDecisionContext(decision.decisionContext, dailyBudgetPolicy, riskControlState.dailyBudgetLimitUsd);
+        }
+      } else {
+        decision.decisionContext = createDailyBudgetDecisionContext(decision.decisionContext, dailyBudgetPolicy, riskControlState.dailyBudgetLimitUsd);
+      }
 
       // 3. Human-readable explanation
       const explanation = formatExplanation(decision, market);
       console.log(explanation);
 
-      if (strategy instanceof LLMStrategy && strategy.lastPlannerResult) {
+      // Write planner trace for both LLM and indicator strategies
+      {
+        const llm = strategy instanceof LLMStrategy ? strategy.lastPlannerResult : null;
         fs.appendFileSync(
           PLANNER_TRACES_FILE,
           JSON.stringify({
@@ -665,18 +817,21 @@ export async function runAgent(strategy: TradingStrategy) {
             timestamp: Math.floor(Date.now() / 1000),
             pair: market.pair,
             priceUsd: market.price,
-            model: strategy.lastPlannerResult.model,
-            keyLabel: strategy.lastPlannerResult.keyLabel,
-            usedFallback: strategy.lastPlannerResult.usedFallback,
-            plannerDecision: strategy.lastPlannerResult.decision,
+            model: llm?.model ?? "indicator",
+            keyLabel: llm?.keyLabel ?? "indicator",
+            usedFallback: llm?.usedFallback ?? false,
+            plannerDecision: llm?.decision ?? null,
             decision,
-            promptVersion: strategy.lastPlannerResult.plannerResponse.promptVersion,
-            toolResults: strategy.lastPlannerResult.toolResults,
-            rawResponse: strategy.lastPlannerResult.rawResponse,
+            promptVersion: llm?.plannerResponse?.promptVersion ?? null,
+            toolResults: llm?.toolResults ?? null,
+            rawResponse: llm?.rawResponse ?? null,
             runtimeRiskState: {
               cppiScale: Number(riskControlState.cppiScale.toFixed(4)),
               breakerActive: riskControlState.breakerActive,
               breakerReason: riskControlState.breakerReason,
+              dailyBudgetStatus: riskControlState.dailyBudgetStatus,
+              dailyBudgetRemainingUsd: round2(riskControlState.dailyBudgetRemainingUsd),
+              dailyBudgetMultiplier: round2(riskControlState.dailyBudgetMultiplier),
               volatilityThrottleActive: riskControlState.volatilityThrottleActive,
               volatilityPct: riskControlState.volatilityPct,
             },
@@ -684,6 +839,10 @@ export async function runAgent(strategy: TradingStrategy) {
         );
       }
 
+
+        riskControlState.appliedTradeScale = initialDecisionAmount > 0
+          ? Math.max(0, Math.min(1, decision.amount / Math.max(initialDecisionAmount, 1)))
+          : 0;
       let intentHash = HOLD_INTENT_HASH;
       let fillExecuted = false;
       const netPnlBeforeTrade = equitySnapshot?.performance.netPnlUsd ?? null;
@@ -790,7 +949,8 @@ export async function runAgent(strategy: TradingStrategy) {
           } else if (decision.action === "HOLD") {
             console.log("[agent] RiskRouter approved a HOLD decision; skipping execution.");
           } else {
-            // 4c. Execute via selected adapter
+            // 4c. Execute via selected adapter (wrapped so checkpoint still posts on failure)
+          try {
             const volumeBase = (decision.amount / market.price).toFixed(8);
             const result = await executionBroker.placeOrder({
               pair:      decision.pair,
@@ -910,7 +1070,71 @@ export async function runAgent(strategy: TradingStrategy) {
                 `[agent] Local drawdown guardrail active after fill (${equitySnapshot.drawdownEvidence.currentDrawdownBps} bps); subsequent trades will be blocked.`
               );
             }
+          } catch (execErr) {
+            console.error(`[agent] Trade execution failed (will still post checkpoint):`, execErr);
+            decision.reasoning += ` [EXEC FAILED: ${execErr instanceof Error ? execErr.message : String(execErr)}]`;
+            decision.decisionContext = {
+              ...decision.decisionContext,
+              riskGateStatus: `exec-failed:${execErr instanceof Error ? execErr.message : String(execErr)}`.slice(0, 200),
+            };
           }
+          }
+        }
+
+        riskControlState.appliedTradeScale = initialDecisionAmount > 0
+          ? Math.max(0, Math.min(1, decision.amount / Math.max(initialDecisionAmount, 1)))
+          : 0;
+      }
+
+      // 4d. Fallback: submit reputation feedback even when execution failed
+      if (!fillExecuted && reputationRaters.length > 0 && decision.action !== "HOLD") {
+        try {
+          const fallbackSeed = `${intentHash}:exec-fallback:${Math.floor(Date.now() / 1000)}`;
+          const fallbackRef = ethers.keccak256(ethers.toUtf8Bytes(fallbackSeed));
+          const repScore = 100;
+          const fallbackComment = `Auto feedback (exec-fallback) for ${decision.action} ${decision.pair} mode=${EXECUTION_MODE}`;
+
+          let selectedRater: ReputationRater | null = null;
+          const firstIdx = seedToIndex(fallbackSeed, reputationRaters.length);
+          for (let offset = 0; offset < reputationRaters.length; offset += 1) {
+            const candidate = reputationRaters[(firstIdx + offset) % reputationRaters.length];
+            const alreadyRated = await candidate.client.hasRated(agentId, candidate.address);
+            if (!alreadyRated) {
+              selectedRater = candidate;
+              break;
+            }
+          }
+
+          if (!selectedRater) {
+            console.log(`[agent] Rep feedback (exec-fallback) skipped: all ${reputationRaters.length} raters already rated agent ${agentId.toString()}`);
+          } else {
+            const repReceipt = await selectedRater.client.submitFeedback(
+              agentId,
+              repScore,
+              fallbackRef,
+              fallbackComment,
+              FeedbackType.STRATEGY_QUALITY
+            );
+            const reputationTxHash = (repReceipt as any).hash || (repReceipt as any).transactionHash || "";
+            fs.appendFileSync(
+              REPUTATION_FEEDBACK_FILE,
+              JSON.stringify({
+                timestamp: Math.floor(Date.now() / 1000),
+                agentId: agentId.toString(),
+                rater: selectedRater.address,
+                score: repScore,
+                feedbackType: "STRATEGY_QUALITY",
+                outcomeRef: fallbackRef,
+                intentHash,
+                txid: "",
+                reputationTxHash,
+                note: "exec-fallback",
+              }) + "\n"
+            );
+            console.log(`[agent] Rep feedback (exec-fallback) submitted: score=${repScore} rater=${selectedRater.address}`);
+          }
+        } catch (repErr) {
+          console.warn("[agent] Rep feedback (exec-fallback) failed (non-fatal):", repErr);
         }
       }
 
@@ -957,6 +1181,20 @@ export async function runAgent(strategy: TradingStrategy) {
 
       // 7. Persist to checkpoints.jsonl
       fs.appendFileSync(CHECKPOINTS_FILE, JSON.stringify(checkpoint) + "\n");
+
+      // 8. Send Telegram alert (non-fatal, fire-and-forget)
+      void sendTelegramAlert({
+        agentId: String(agentId),
+        action: checkpoint.action,
+        pair: checkpoint.pair,
+        amountUsd: checkpoint.amountUsd,
+        priceUsd: checkpoint.priceUsd,
+        confidence: checkpoint.confidence,
+        reasoning: checkpoint.reasoning,
+        intentHash: checkpoint.intentHash,
+        timestamp: checkpoint.timestamp,
+        decisionContext: checkpoint.decisionContext,
+      });
 
     } catch (err) {
       console.error(`[agent] Error in tick:`, err);

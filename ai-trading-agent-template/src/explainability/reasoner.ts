@@ -37,6 +37,8 @@ export function formatExplanation(decision: TradeDecision, market: MarketData): 
       `    edge expected=${formatMaybeNumber(context.expectedEdgeBps, 2)}bps cost=${formatMaybeNumber(context.costDragBps, 2)}bps net=${formatMaybeNumber(context.netEdgeBps, 2)}bps threshold=${formatMaybeNumber(context.edgeThresholdBps, 2)}bps`,
       `    gates dual=${context.dualGateStatus ?? "n/a"} risk=${context.riskGateStatus ?? "n/a"}`,
       `    execution=${context.executionIntent ?? "n/a"} cppiScale=${formatMaybeNumber(context.cppiScale, 3)} breaker=${context.breakerState ?? "n/a"}`,
+      `    sizing=${context.regimeSizingStatus ?? "n/a"} multiplier=${formatMaybeNumber(context.regimeSizingMultiplier, 3)} reason=${context.regimeSizingReason ?? "n/a"}`,
+      `    budget=${context.dailyBudgetStatus ?? "n/a"} remaining=${formatMaybeNumber(context.dailyBudgetRemainingUsd, 2)}usd limit=${formatMaybeNumber(context.dailyBudgetLimitUsd, 2)}usd used=${formatMaybeNumber((context.dailyBudgetUtilizationPct ?? NaN) * 100, 1)}% multiplier=${formatMaybeNumber(context.dailyBudgetMultiplier, 3)}`,
     ].join("\n")
     : "";
 
@@ -75,7 +77,7 @@ export function formatCheckpointLog(checkpoint: TradeCheckpoint): string {
   const quoteTimestampLabel = formatTimestampLabel(checkpoint.quoteTimestamp ?? checkpoint.timestamp * 1000);
   const quoteAgeLabel = formatAgeLabel(Date.now() - (checkpoint.quoteTimestamp ?? checkpoint.timestamp * 1000));
   const contextSummary = context
-    ? `\n  Context:  regime=${context.regimeLabel ?? "n/a"} edge=${formatMaybeNumber(context.netEdgeBps, 2)}bps gate=${context.riskGateStatus ?? "n/a"}`
+    ? `\n  Context:  regime=${context.regimeLabel ?? "n/a"} edge=${formatMaybeNumber(context.netEdgeBps, 2)}bps gate=${context.riskGateStatus ?? "n/a"} sizing=${context.regimeSizingStatus ?? "n/a"} budget=${context.dailyBudgetStatus ?? "n/a"}`
     : "";
   return (
     `\n${"─".repeat(72)}\n` +

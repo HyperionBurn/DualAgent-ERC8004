@@ -61,6 +61,11 @@ export interface EquityReportPayload {
     breakerReason: string | null;
     consecutiveLosses: number;
     dailyLossUsd: number;
+    dailyBudgetStatus: "healthy" | "throttled" | "blocked";
+    dailyBudgetRemainingUsd: number;
+    dailyBudgetLimitUsd: number;
+    dailyBudgetUtilizationPct: number;
+    dailyBudgetMultiplier: number;
     volatilityThrottleActive: boolean;
     volatilityPct: number | null;
     appliedTradeScale: number;

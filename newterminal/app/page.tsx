@@ -10,7 +10,9 @@ import { RiskPanel } from '@/components/trading/risk-panel';
 import { ValidationProofs } from '@/components/trading/validation-proofs';
 import { CheckpointFeed } from '@/components/trading/checkpoint-feed';
 import { TraceFeed } from '@/components/trading/trace-feed';
+import { NotificationToast } from '@/components/trading/notification-toast';
 import { Footer } from '@/components/trading/footer';
+import { useTradeNotifications } from '@/hooks/use-trade-notifications';
 import {
   loadDashboardSnapshot,
   loadMarketContext,
@@ -42,6 +44,46 @@ export default function TradingConsole() {
   const [rightRailCollapsed, setRightRailCollapsed] = useState(false);
   const [useMockFallback, setUseMockFallback] = useState(false);
   const consecutiveErrorsRef = useRef(0);
+
+  // --- Uptime calculation ---
+  const agentStartTimeRef = useRef<Date | null>(null);
+  const [uptime, setUptime] = useState('');
+  const [checkpointCount, setCheckpointCount] = useState(0);
+  const [tradeCount, setTradeCount] = useState(0);
+
+  useEffect(() => {
+    if (snapshot?.status?.agentRunning && !agentStartTimeRef.current) {
+      agentStartTimeRef.current = new Date();
+    }
+    if (!snapshot?.status?.agentRunning) {
+      agentStartTimeRef.current = null;
+      setUptime('');
+    }
+  }, [snapshot?.status?.agentRunning]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (agentStartTimeRef.current) {
+        const elapsed = Math.floor((Date.now() - agentStartTimeRef.current.getTime()) / 1000);
+        const h = Math.floor(elapsed / 3600);
+        const m = Math.floor((elapsed % 3600) / 60);
+        setUptime(h > 0 ? `${h}h ${m}m` : `${m}m`);
+      }
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    if (snapshot) {
+      setCheckpointCount(snapshot.checkpoints.length);
+      setTradeCount(snapshot.checkpoints.filter((cp) => cp.action !== 'HOLD').length);
+    }
+  }, [snapshot]);
+
+  // --- Trade notifications ---
+  const { latestNotification, unreadCount, requestPermission, clearLatestNotification } = useTradeNotifications(
+    snapshot?.checkpoints ?? []
+  );
 
   // --- Live data polling ---
   useEffect(() => {
@@ -206,6 +248,17 @@ export default function TradingConsole() {
         connectionStatus={connectionStatus}
         latency={latency}
         isDemo={useMockFallback}
+        unreadNotificationCount={unreadCount}
+        onBellClick={requestPermission}
+        uptime={uptime}
+        checkpointCount={checkpointCount}
+        tradeCount={tradeCount}
+      />
+
+      {/* Trade Notification Toast */}
+      <NotificationToast
+        notification={latestNotification}
+        onDismiss={clearLatestNotification}
       />
 
       {/* Market Context Strip */}

@@ -89,7 +89,7 @@ export function computeValidationAttestationScore(input: ValidationAttestationIn
     score += 2;
   }
 
-  const boundedScore = clamp(Math.round(score), 1, 99);
+  const boundedScore = clamp(Math.round(score), 1, 100);
   const edgeSurplusBps = Math.max(0, netEdgeBps - edgeThresholdBps);
   const notes = [
     `conf=${Math.round(confidence * 100)}`,
