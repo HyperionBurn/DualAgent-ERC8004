@@ -177,7 +177,8 @@ const heroStats = [
   { label: "Equity", value: "$10,000.47", trend: "up" },
   { label: "PnL", value: "+$0.47", trend: "up" },
   { label: "Max DD", value: "2 bps", trend: "neutral" },
-  { label: "Validation", value: "99/100", trend: "up" },
+  { label: "Validation", value: "100/100", trend: "up" },
+  { label: "Reputation", value: "99/100", trend: "up" },
 ]
 
 export function Hero() {
@@ -272,6 +273,25 @@ export function Hero() {
             on-chain risk enforcement. Every decision is cryptographically bound, 
             every trade is verifiable.
           </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            className="mt-5 flex flex-col items-center gap-3"
+          >
+            <p className="text-sm sm:text-base text-muted-foreground text-center">
+              Leaderboard snapshot: <span className="text-foreground font-semibold">Agent 53</span> with <span className="text-foreground font-semibold">Validation 100/100</span> and <span className="text-foreground font-semibold">Reputation 99/100</span>.
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <span className="px-3 py-1 rounded-full text-xs font-medium border border-primary/30 bg-primary/10 text-primary">
+                Daily Risk Budget
+              </span>
+              <span className="px-3 py-1 rounded-full text-xs font-medium border border-success/30 bg-success/10 text-success">
+                Regime-Aware Sizing
+              </span>
+            </div>
+          </motion.div>
 
           {/* CTA Buttons */}
           <motion.div
